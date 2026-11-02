@@ -1,0 +1,1323 @@
+[
+ {
+  "id": "orders_placed_2017",
+  "question": "How many orders were placed in 2017?",
+  "kind": "number",
+  "tags": [
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 45101,
+  "notes": "Every status counts as placed."
+ },
+ {
+  "id": "orders_placed_2018",
+  "question": "How many orders were placed in 2018?",
+  "kind": "number",
+  "tags": [
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 54011,
+  "notes": "Every status counts as placed."
+ },
+ {
+  "id": "orders_2017-11",
+  "question": "How many orders did we get in November 2017?",
+  "kind": "number",
+  "tags": [
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 7423,
+  "notes": ""
+ },
+ {
+  "id": "orders_2018-01",
+  "question": "How many orders did we get in January 2018?",
+  "kind": "number",
+  "tags": [
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 7187,
+  "notes": ""
+ },
+ {
+  "id": "orders_2018-05",
+  "question": "How many orders did we get in May 2018?",
+  "kind": "number",
+  "tags": [
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 6833,
+  "notes": ""
+ },
+ {
+  "id": "orders_growth_jan_feb_2018",
+  "question": "By what percentage did orders change from January to February 2018?",
+  "kind": "number",
+  "tags": [
+   "status",
+   "derived"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": -0.07819674412133015,
+  "notes": ""
+ },
+ {
+  "id": "canceled_2017",
+  "question": "How many orders were canceled in 2017?",
+  "kind": "number",
+  "tags": [
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 265,
+  "notes": ""
+ },
+ {
+  "id": "cancellation_rate_2017",
+  "question": "What was the cancellation rate in 2017?",
+  "kind": "number",
+  "tags": [
+   "status",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.005875701203964435,
+  "notes": ""
+ },
+ {
+  "id": "canceled_2018",
+  "question": "How many orders were canceled in 2018?",
+  "kind": "number",
+  "tags": [
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 334,
+  "notes": ""
+ },
+ {
+  "id": "cancellation_rate_2018",
+  "question": "What was the cancellation rate in 2018?",
+  "kind": "number",
+  "tags": [
+   "status",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.006183925496658088,
+  "notes": ""
+ },
+ {
+  "id": "orders_by_month_2018h1",
+  "question": "How many orders did we get each month from January to June 2018?",
+  "kind": "table",
+  "tags": [
+   "status",
+   "time"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": "month",
+  "answer": [
+   [
+    "2018-03",
+    7168
+   ],
+   [
+    "2018-04",
+    6919
+   ],
+   [
+    "2018-05",
+    6833
+   ],
+   [
+    "2018-02",
+    6625
+   ],
+   [
+    "2018-01",
+    7187
+   ],
+   [
+    "2018-06",
+    6145
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "gmv_2017",
+  "question": "What was GMV in 2017?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 6108492.270002586,
+  "notes": ""
+ },
+ {
+  "id": "gmv_2018",
+  "question": "What was GMV in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 7341182.410003972,
+  "notes": ""
+ },
+ {
+  "id": "gmv_2017-11",
+  "question": "What was GMV in November 2017?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 1003862.1400000374,
+  "notes": ""
+ },
+ {
+  "id": "gmv_2018-04",
+  "question": "What was GMV in April 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 993592.9800000284,
+  "notes": ""
+ },
+ {
+  "id": "gmv_SP_2018",
+  "question": "What was GMV from customers in São Paulo state in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "join"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 2960471.249999626,
+  "notes": ""
+ },
+ {
+  "id": "gmv_RJ_2018",
+  "question": "What was GMV from customers in Rio de Janeiro state in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "join"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 901277.7200000306,
+  "notes": ""
+ },
+ {
+  "id": "gmv_MG_2018",
+  "question": "What was GMV from customers in Minas Gerais state in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "join"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 851003.4800000269,
+  "notes": ""
+ },
+ {
+  "id": "gmv_growth_2018",
+  "question": "By what percentage did GMV grow from 2017 to 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "derived"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.20179941064259888,
+  "notes": ""
+ },
+ {
+  "id": "gmv_health_beauty_2018",
+  "question": "What was GMV for health and beauty products in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "category"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 770002.8100000052,
+  "notes": ""
+ },
+ {
+  "id": "gmv_no_category",
+  "question": "How much GMV came from products that have no category?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "category",
+   "nulls"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 178572.54999999824,
+  "notes": ""
+ },
+ {
+  "id": "gmv_seller_sp_2018",
+  "question": "How much GMV came from sellers based in São Paulo state in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "join"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 4766187.620000907,
+  "notes": ""
+ },
+ {
+  "id": "top_states_gmv_2018",
+  "question": "Which 5 customer states had the highest GMV in 2018, and how much each?",
+  "kind": "table",
+  "tags": [
+   "fan-out",
+   "ranking"
+  ],
+  "ordered": true,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": [
+   [
+    "SP",
+    2960471.249999774
+   ],
+   [
+    "RJ",
+    901277.7200000267
+   ],
+   [
+    "MG",
+    851003.4800000255
+   ],
+   [
+    "RS",
+    382652.7400000029
+   ],
+   [
+    "PR",
+    380766.3100000023
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "top_categories_gmv_2017",
+  "question": "What were the top 5 product categories by GMV in 2017?",
+  "kind": "table",
+  "tags": [
+   "fan-out",
+   "category",
+   "ranking"
+  ],
+  "ordered": true,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": [
+   [
+    "bed_bath_table",
+    497970.9400000165
+   ],
+   [
+    "watches_gifts",
+    486519.0200000026
+   ],
+   [
+    "health_beauty",
+    481142.7300000075
+   ],
+   [
+    "sports_leisure",
+    447546.5900000087
+   ],
+   [
+    "computers_accessories",
+    400490.6100000039
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "top_categories_gmv_2018",
+  "question": "What were the top 5 product categories by GMV in 2018?",
+  "kind": "table",
+  "tags": [
+   "fan-out",
+   "category",
+   "ranking"
+  ],
+  "ordered": true,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": [
+   [
+    "health_beauty",
+    770002.8100000053
+   ],
+   [
+    "watches_gifts",
+    708305.9500000059
+   ],
+   [
+    "bed_bath_table",
+    537514.1300000175
+   ],
+   [
+    "sports_leisure",
+    530182.1800000095
+   ],
+   [
+    "computers_accessories",
+    502432.0900000147
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "top_seller_states_gmv",
+  "question": "Which 3 seller states generated the most GMV overall?",
+  "kind": "table",
+  "tags": [
+   "fan-out",
+   "join",
+   "ranking"
+  ],
+  "ordered": true,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": [
+   [
+    "SP",
+    8687740.350006606
+   ],
+   [
+    "PR",
+    1256874.0099999772
+   ],
+   [
+    "MG",
+    1001944.7600000474
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "aov_2017",
+  "question": "What was the average order value in 2017?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 137.64375650651402,
+  "notes": ""
+ },
+ {
+  "id": "aov_2018",
+  "question": "What was the average order value in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 137.13633733101645,
+  "notes": ""
+ },
+ {
+  "id": "aov_SP_2018",
+  "question": "What was the average order value for customers in São Paulo state in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "ratio",
+   "join"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 125.44901267001255,
+  "notes": ""
+ },
+ {
+  "id": "aov_BA_2018",
+  "question": "What was the average order value for customers in Bahia state in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "ratio",
+   "join"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 153.7615875706192,
+  "notes": ""
+ },
+ {
+  "id": "freight_2018",
+  "question": "How much freight did we charge in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 1252121.5500000175,
+  "notes": ""
+ },
+ {
+  "id": "freight_share_2018",
+  "question": "What was freight as a percentage of GMV in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "derived"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.17056129109307067,
+  "notes": ""
+ },
+ {
+  "id": "items_2017-12",
+  "question": "How many items were sold in December 2017?",
+  "kind": "number",
+  "tags": [
+   "fan-out"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 6300,
+  "notes": ""
+ },
+ {
+  "id": "top_categories_items_2018",
+  "question": "Which 5 product categories sold the most items in 2018?",
+  "kind": "table",
+  "tags": [
+   "category",
+   "ranking"
+  ],
+  "ordered": true,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": [
+   [
+    "health_beauty",
+    5924
+   ],
+   [
+    "bed_bath_table",
+    5873
+   ],
+   [
+    "computers_accessories",
+    4683
+   ],
+   [
+    "sports_leisure",
+    4503
+   ],
+   [
+    "furniture_decor",
+    4098
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "payments_2018",
+  "question": "How much money did customers pay us in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 8594831.979999922,
+  "notes": ""
+ },
+ {
+  "id": "payments_boleto_2018",
+  "question": "How much was paid with boleto in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 1452854.2299999888,
+  "notes": ""
+ },
+ {
+  "id": "payments_voucher_2018",
+  "question": "How much was paid with vouchers in 2018?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 181015.42,
+  "notes": ""
+ },
+ {
+  "id": "payments_cc_share_2018",
+  "question": "What share of the money received in 2018 came from credit cards?",
+  "kind": "number",
+  "tags": [
+   "fan-out",
+   "derived"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.7902028155761657,
+  "notes": ""
+ },
+ {
+  "id": "installments_cc_2018",
+  "question": "On average, how many installments did credit card payments have in 2018?",
+  "kind": "number",
+  "tags": [
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 3.304665178035487,
+  "notes": ""
+ },
+ {
+  "id": "payments_by_type_2018",
+  "question": "Break down the money received in 2018 by payment method.",
+  "kind": "table",
+  "tags": [
+   "fan-out",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": [
+   [
+    "debit_card",
+    169301.9
+   ],
+   [
+    "voucher",
+    181015.42000000004
+   ],
+   [
+    "boleto",
+    1452854.2299999925
+   ],
+   [
+    "credit_card",
+    6791660.430000009
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "active_customers_2017",
+  "question": "How many customers bought from us in 2017?",
+  "kind": "number",
+  "tags": [
+   "customer-identity",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 43034,
+  "notes": ""
+ },
+ {
+  "id": "active_customers_2018",
+  "question": "How many customers bought from us in 2018?",
+  "kind": "number",
+  "tags": [
+   "customer-identity",
+   "status"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 52337,
+  "notes": ""
+ },
+ {
+  "id": "active_customers_SP_2018",
+  "question": "How many customers in São Paulo state bought from us in 2018?",
+  "kind": "number",
+  "tags": [
+   "customer-identity"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 23051,
+  "notes": ""
+ },
+ {
+  "id": "active_customers_RJ_2017",
+  "question": "How many customers in Rio de Janeiro state bought from us in 2017?",
+  "kind": "number",
+  "tags": [
+   "customer-identity"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 5948,
+  "notes": ""
+ },
+ {
+  "id": "customers_total",
+  "question": "How many customers do we have in total?",
+  "kind": "number",
+  "tags": [
+   "customer-identity"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 94990,
+  "notes": ""
+ },
+ {
+  "id": "new_customers_2018",
+  "question": "How many new customers did we acquire in 2018?",
+  "kind": "number",
+  "tags": [
+   "customer-identity",
+   "cohort"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 51668,
+  "notes": ""
+ },
+ {
+  "id": "new_customers_2018-03",
+  "question": "How many new customers did we get in March 2018?",
+  "kind": "number",
+  "tags": [
+   "customer-identity",
+   "cohort"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 6931,
+  "notes": ""
+ },
+ {
+  "id": "new_customers_by_quarter_2017",
+  "question": "How many new customers did we get in each quarter of 2017?",
+  "kind": "table",
+  "tags": [
+   "customer-identity",
+   "cohort",
+   "time"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": "quarter",
+  "answer": [
+   [
+    "2017-Q2",
+    8968
+   ],
+   [
+    "2017-Q1",
+    5013
+   ],
+   [
+    "2017-Q4",
+    17021
+   ],
+   [
+    "2017-Q3",
+    12027
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "repeat_customers",
+  "question": "How many customers have placed more than one order?",
+  "kind": "number",
+  "tags": [
+   "customer-identity"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 2888,
+  "notes": ""
+ },
+ {
+  "id": "repeat_rate",
+  "question": "What percentage of our customers have ordered more than once?",
+  "kind": "number",
+  "tags": [
+   "customer-identity",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.030403200336877566,
+  "notes": ""
+ },
+ {
+  "id": "repeat_rate_2017_cohort",
+  "question": "Of the customers whose first order was in 2017, what share ordered again at some point?",
+  "kind": "number",
+  "tags": [
+   "customer-identity",
+   "cohort",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.04227381533384462,
+  "notes": ""
+ },
+ {
+  "id": "late_rate_2017",
+  "question": "What share of delivered orders arrived late in 2017?",
+  "kind": "number",
+  "tags": [
+   "delivery",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.0564868972504951,
+  "notes": ""
+ },
+ {
+  "id": "late_rate_2018",
+  "question": "What share of delivered orders arrived late in 2018?",
+  "kind": "number",
+  "tags": [
+   "delivery",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.07726850711484169,
+  "notes": ""
+ },
+ {
+  "id": "late_rate_RJ",
+  "question": "What is the late delivery rate for customers in Rio de Janeiro state?",
+  "kind": "number",
+  "tags": [
+   "delivery",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.12105263157894737,
+  "notes": ""
+ },
+ {
+  "id": "late_rate_AL",
+  "question": "What is the late delivery rate for customers in Alagoas state?",
+  "kind": "number",
+  "tags": [
+   "delivery",
+   "ratio"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": true,
+  "key": null,
+  "answer": 0.2141057934508816,
+  "notes": ""
+ },
+ {
+  "id": "delivery_days_2018",
+  "question": "How many days did delivery take on average in 2018?",
+  "kind": "number",
+  "tags": [
+   "delivery"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 12.137693076529565,
+  "notes": ""
+ },
+ {
+  "id": "delivery_days_RR",
+  "question": "How long do deliveries to customers in Roraima state take on average, in days?",
+  "kind": "number",
+  "tags": [
+   "delivery"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 29.38754601400181,
+  "notes": ""
+ },
+ {
+  "id": "delivered_2018-02",
+  "question": "How many orders were delivered from February 2018 purchases?",
+  "kind": "number",
+  "tags": [
+   "delivery",
+   "time"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 6555,
+  "notes": ""
+ },
+ {
+  "id": "slowest_states",
+  "question": "Which 3 customer states have the longest average delivery time, in days?",
+  "kind": "table",
+  "tags": [
+   "delivery",
+   "ranking"
+  ],
+  "ordered": true,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": [
+   [
+    "RR",
+    29.38754601400181
+   ],
+   [
+    "AP",
+    27.185067716970707
+   ],
+   [
+    "AM",
+    26.425990900383134
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "late_rate_big_states",
+  "question": "Among customer states with at least 5,000 delivered orders, which has the highest late delivery rate?",
+  "kind": "table",
+  "tags": [
+   "delivery",
+   "ratio",
+   "ranking"
+  ],
+  "ordered": true,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": [
+   [
+    "RJ",
+    0.12105263157894737
+   ]
+  ],
+  "notes": ""
+ },
+ {
+  "id": "review_2018",
+  "question": "What was the average review score in 2018?",
+  "kind": "number",
+  "tags": [
+   "reviews-dedup"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 4.08910226531183,
+  "notes": ""
+ },
+ {
+  "id": "review_late",
+  "question": "What is the average review score of orders that were delivered late?",
+  "kind": "number",
+  "tags": [
+   "reviews-dedup",
+   "delivery"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 2.270490518727472,
+  "notes": ""
+ },
+ {
+  "id": "review_on_time",
+  "question": "What is the average review score of orders delivered on time?",
+  "kind": "number",
+  "tags": [
+   "reviews-dedup",
+   "delivery"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 4.290386055923885,
+  "notes": ""
+ },
+ {
+  "id": "review_SP_2017",
+  "question": "What was the average review score from customers in São Paulo state in 2017?",
+  "kind": "number",
+  "tags": [
+   "reviews-dedup"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": 4.153343930964006,
+  "notes": ""
+ },
+ {
+  "id": "sellers_active_2018",
+  "question": "How many sellers made at least one sale in 2018?",
+  "kind": "number",
+  "tags": [
+   "coverage-gap"
+  ],
+  "ordered": false,
+  "in_semantic_layer": false,
+  "percent": false,
+  "key": null,
+  "answer": 2354,
+  "notes": ""
+ },
+ {
+  "id": "products_sold_2018",
+  "question": "How many different products were sold in 2018?",
+  "kind": "number",
+  "tags": [
+   "coverage-gap"
+  ],
+  "ordered": false,
+  "in_semantic_layer": false,
+  "percent": false,
+  "key": null,
+  "answer": 20376,
+  "notes": ""
+ },
+ {
+  "id": "multi_item_share",
+  "question": "What share of orders contain more than one item?",
+  "kind": "number",
+  "tags": [
+   "coverage-gap"
+  ],
+  "ordered": false,
+  "in_semantic_layer": false,
+  "percent": true,
+  "key": null,
+  "answer": 0.09940019755801995,
+  "notes": "Over valid orders with at least one item."
+ },
+ {
+  "id": "avg_product_weight",
+  "question": "What is the average weight of our products, in grams?",
+  "kind": "number",
+  "tags": [
+   "coverage-gap"
+  ],
+  "ordered": false,
+  "in_semantic_layer": false,
+  "percent": false,
+  "key": null,
+  "answer": 2276.4724877841513,
+  "notes": ""
+ },
+ {
+  "id": "profit_margin_2018",
+  "question": "What was our gross profit margin in 2018?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There is no cost of goods."
+ },
+ {
+  "id": "marketing_spend_2017",
+  "question": "How much did we spend on marketing in 2017?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There is no marketing data."
+ },
+ {
+  "id": "customer_age",
+  "question": "What is the average age of our customers?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There is no age or birth date."
+ },
+ {
+  "id": "return_rate_2018",
+  "question": "What share of items were returned in 2018?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There is no returns data."
+ },
+ {
+  "id": "gmv_usd_2018",
+  "question": "What was GMV in US dollars in 2018?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There are no exchange rates; amounts are in BRL."
+ },
+ {
+  "id": "conversion_rate_2018",
+  "question": "What was the website conversion rate in 2018?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There are no visits or sessions."
+ },
+ {
+  "id": "top_sales_rep",
+  "question": "Which sales rep closed the most orders last year?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There are no sales reps."
+ },
+ {
+  "id": "cac_2018",
+  "question": "What was our customer acquisition cost in 2018?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There is no spend data."
+ },
+ {
+  "id": "stock_bed_bath",
+  "question": "How many units of bed_bath_table products do we have in stock?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There is no inventory."
+ },
+ {
+  "id": "newsletter_unsubscribes",
+  "question": "How many customers unsubscribed from the newsletter in 2018?",
+  "kind": "none",
+  "tags": [
+   "unanswerable"
+  ],
+  "ordered": false,
+  "in_semantic_layer": true,
+  "percent": false,
+  "key": null,
+  "answer": null,
+  "notes": "There is no newsletter data."
+ }
+]

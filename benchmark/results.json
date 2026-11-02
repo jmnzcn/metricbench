@@ -1,0 +1,262 @@
+{
+ "summary": [
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "semantic",
+   "questions": 78,
+   "accuracy": 0.9358974358974359,
+   "answerable_accuracy": 0.9264705882352942,
+   "in_layer_accuracy": 0.984375,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "correct": 73,
+    "abstained": 4,
+    "wrong": 1
+   },
+   "cost_usd": 0.0428,
+   "mean_seconds": 4.9
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "sql",
+   "questions": 78,
+   "accuracy": 0.47435897435897434,
+   "answerable_accuracy": 0.39705882352941174,
+   "in_layer_accuracy": 0.390625,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "wrong": 41,
+    "correct": 37
+   },
+   "cost_usd": 0.033,
+   "mean_seconds": 4.1
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "sql+glossary",
+   "questions": 78,
+   "accuracy": 0.9615384615384616,
+   "answerable_accuracy": 0.9558823529411765,
+   "in_layer_accuracy": 0.953125,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "wrong": 3,
+    "correct": 75
+   },
+   "cost_usd": 0.0333,
+   "mean_seconds": 3.6
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "semantic",
+   "questions": 78,
+   "accuracy": 0.9487179487179487,
+   "answerable_accuracy": 0.9411764705882353,
+   "in_layer_accuracy": 1.0,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "correct": 74,
+    "abstained": 4
+   },
+   "cost_usd": 1.2594,
+   "mean_seconds": 7.1
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "sql",
+   "questions": 78,
+   "accuracy": 0.4230769230769231,
+   "answerable_accuracy": 0.3382352941176471,
+   "in_layer_accuracy": 0.328125,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "wrong": 45,
+    "correct": 33
+   },
+   "cost_usd": 0.97,
+   "mean_seconds": 6.2
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "sql+glossary",
+   "questions": 78,
+   "accuracy": 1.0,
+   "answerable_accuracy": 1.0,
+   "in_layer_accuracy": 1.0,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "correct": 78
+   },
+   "cost_usd": 0.8639,
+   "mean_seconds": 5.2
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "semantic",
+   "questions": 78,
+   "accuracy": 0.9487179487179487,
+   "answerable_accuracy": 0.9411764705882353,
+   "in_layer_accuracy": 1.0,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "correct": 74,
+    "abstained": 4
+   },
+   "cost_usd": 0.6358,
+   "mean_seconds": 5.1
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "sql",
+   "questions": 78,
+   "accuracy": 0.47435897435897434,
+   "answerable_accuracy": 0.39705882352941174,
+   "in_layer_accuracy": 0.390625,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "correct": 37,
+    "wrong": 41
+   },
+   "cost_usd": 0.4858,
+   "mean_seconds": 4.6
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "sql+glossary",
+   "questions": 78,
+   "accuracy": 0.9743589743589743,
+   "answerable_accuracy": 0.9705882352941176,
+   "in_layer_accuracy": 0.96875,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "correct": 76,
+    "wrong": 2
+   },
+   "cost_usd": 0.4417,
+   "mean_seconds": 3.7
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "semantic",
+   "questions": 78,
+   "accuracy": 0.9487179487179487,
+   "answerable_accuracy": 0.9411764705882353,
+   "in_layer_accuracy": 1.0,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "correct": 74,
+    "abstained": 4
+   },
+   "cost_usd": 1.0234,
+   "mean_seconds": 18.6
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "sql",
+   "questions": 78,
+   "accuracy": 0.23076923076923078,
+   "answerable_accuracy": 0.11764705882352941,
+   "in_layer_accuracy": 0.09375,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "wrong": 19,
+    "no_answer": 41,
+    "correct": 18
+   },
+   "cost_usd": 3.0015,
+   "mean_seconds": 64.2
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "sql+glossary",
+   "questions": 78,
+   "accuracy": 0.9230769230769231,
+   "answerable_accuracy": 0.9117647058823529,
+   "in_layer_accuracy": 0.90625,
+   "refused_unanswerable": 1.0,
+   "grades": {
+    "correct": 72,
+    "no_answer": 6
+   },
+   "cost_usd": 1.7665,
+   "mean_seconds": 33.6
+  }
+ ],
+ "by_tag": {
+  "category": {
+   "semantic": 1.0,
+   "sql+glossary": 1.0,
+   "sql": 0.4
+  },
+  "cohort": {
+   "semantic": 1.0,
+   "sql+glossary": 1.0,
+   "sql": 0.0
+  },
+  "coverage-gap": {
+   "semantic": 0.0,
+   "sql+glossary": 1.0,
+   "sql": 0.5
+  },
+  "customer-identity": {
+   "semantic": 1.0,
+   "sql+glossary": 0.9090909090909091,
+   "sql": 0.09090909090909091
+  },
+  "delivery": {
+   "semantic": 0.9772727272727273,
+   "sql+glossary": 0.9318181818181818,
+   "sql": 0.36363636363636365
+  },
+  "derived": {
+   "semantic": 1.0,
+   "sql+glossary": 1.0,
+   "sql": 0.0625
+  },
+  "fan-out": {
+   "semantic": 1.0,
+   "sql+glossary": 0.9907407407407407,
+   "sql": 0.24074074074074073
+  },
+  "join": {
+   "semantic": 1.0,
+   "sql+glossary": 1.0,
+   "sql": 0.32142857142857145
+  },
+  "nulls": {
+   "semantic": 1.0,
+   "sql+glossary": 1.0,
+   "sql": 0.0
+  },
+  "ranking": {
+   "semantic": 0.9642857142857143,
+   "sql+glossary": 1.0,
+   "sql": 0.35714285714285715
+  },
+  "ratio": {
+   "semantic": 0.9807692307692307,
+   "sql+glossary": 0.9423076923076923,
+   "sql": 0.15384615384615385
+  },
+  "reviews-dedup": {
+   "semantic": 1.0,
+   "sql+glossary": 0.6875,
+   "sql": 0.4375
+  },
+  "status": {
+   "semantic": 1.0,
+   "sql+glossary": 1.0,
+   "sql": 0.3977272727272727
+  },
+  "time": {
+   "semantic": 1.0,
+   "sql+glossary": 1.0,
+   "sql": 0.3333333333333333
+  },
+  "unanswerable": {
+   "semantic": 1.0,
+   "sql+glossary": 1.0,
+   "sql": 1.0
+  }
+ }
+}

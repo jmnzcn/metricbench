@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MetricBench results</title>
+<style>
+  :root {
+    --bg: #fbfaf7; --surface: #ffffff; --ink: #1d1d1b; --muted: #6b6a66; --line: #e6e3dc;
+    --accent: #2f5d8a; --good: #2e7d4f; --bad: #b3261e; --warn: #9a6700; --bar: #2f5d8a; --bar-bg: #eceae4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161614; --surface: #1f1f1c; --ink: #ecebe7; --muted: #a3a29c; --line: #34332f;
+      --accent: #8fb6dc; --good: #7cc79a; --bad: #f2867e; --warn: #e3b341; --bar: #8fb6dc; --bar-bg: #2c2b28;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161614; --surface: #1f1f1c; --ink: #ecebe7; --muted: #a3a29c; --line: #34332f;
+    --accent: #8fb6dc; --good: #7cc79a; --bad: #f2867e; --warn: #e3b341; --bar: #8fb6dc; --bar-bg: #2c2b28;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 40px 0 8px; }
+  p { margin: 8px 0; max-width: 720px; }
+  .muted { color: var(--muted); }
+  a { color: var(--accent); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+  .card .big { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .card .label { font-size: 13px; color: var(--muted); }
+  .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+  .barbg { display: inline-block; width: 70px; height: 8px; border-radius: 4px; background: var(--bar-bg);
+           margin-left: 8px; vertical-align: middle; overflow: hidden; }
+  .bar { display: block; height: 8px; border-radius: 4px; background: var(--bar); }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+  .chip { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px;
+          padding: 3px 10px; font-size: 13px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  .q { cursor: pointer; }
+  .q:hover, .q.selected { background: var(--bar-bg); }
+  .q td:first-child { white-space: normal; min-width: 260px; }
+  .dot { display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin: 0 1px; vertical-align: middle; }
+  .correct { background: var(--good); }
+  .wrong { background: var(--bad); }
+  .abstained { background: var(--warn); }
+  .no_answer, .invented { background: var(--muted); }
+  .invented { outline: 2px solid var(--bad); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); margin: 6px 0; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .detail { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-top: 12px; }
+  .detail h3 { margin: 0 0 4px; font-size: 15px; }
+  .ans { border-top: 1px solid var(--line); padding: 8px 0; font-size: 14px; }
+  .ans code, .detail code { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; word-break: break-word; }
+  .tag { font-size: 12px; color: var(--muted); }
+  footer { margin-top: 48px; font-size: 13px; color: var(--muted); }
+  @media (max-width: 600px) { .q td:first-child { min-width: 180px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>MetricBench</h1>
+  <p class="muted">Can an AI agent answer business questions about real data correctly? Four models, 78 questions with
+    known answers about the Olist e-commerce dataset, three ways to reach the data.
+    <a href="https://github.com/jmnzcn/metricbench">Repository and method</a></p>
+
+  <div class="cards" id="cards"></div>
+
+  <h2>Accuracy by model and access</h2>
+  <p class="muted">All 78 questions: 64 the semantic layer covers, 4 answerable only from raw data, 10 the data cannot answer.
+    A number counts as right within 0.1%.</p>
+  <div class="table-wrap"><table id="board">
+    <thead><tr><th>Model</th><th>Raw SQL</th><th>SQL + glossary</th><th>Semantic layer</th>
+      <th>Semantic, covered questions</th><th>Cost / question (SQL · glossary · semantic)</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <h2>Accuracy by trap</h2>
+  <p class="muted">All four models together. A question can have several traps.</p>
+  <div class="table-wrap"><table id="traps">
+    <thead><tr><th>Trap</th><th>Questions</th><th>Raw SQL</th><th>SQL + glossary</th><th>Semantic layer</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <h2>Every question</h2>
+  <p class="muted">Each square is one answer: the four models (Haiku, Sonnet, Opus, Gemini) for raw SQL, then with the glossary,
+    then through the semantic layer. Click a question to read the answers.</p>
+  <div class="legend">
+    <span><i class="dot correct"></i>right</span><span><i class="dot wrong"></i>wrong</span>
+    <span><i class="dot abstained"></i>said it can't answer</span><span><i class="dot no_answer"></i>no answer in 14 turns</span>
+  </div>
+  <div class="filters" id="filters"></div>
+  <div class="table-wrap"><table id="questions">
+    <thead><tr><th>Question</th><th>Raw SQL</th><th>SQL + glossary</th><th>Semantic layer</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <div id="detail"></div>
+
+  <footer>Data: the Olist Brazilian E-Commerce Public Dataset (CC BY-NC-SA 4.0), downloaded by the harness, not
+    redistributed. Harness Apache 2.0. One run per model, November 2026.
+    Ney Fred Jiménez Campos · <a href="https://www.linkedin.com/in/neyfred/">LinkedIn</a></footer>
+</main>
+<script>
+const MODELS = [["claude-haiku-5-5", "Claude Haiku 5.5"], ["claude-sonnet-5-5", "Claude Sonnet 5.5"],
+                ["claude-opus-5-5", "Claude Opus 5.5"], ["gemini-3.8-flash", "Gemini 3.8 Flash"]];
+const ARMS = [["sql", "Raw SQL"], ["sql+glossary", "SQL + glossary"], ["semantic", "Semantic layer"]];
+const GRADE = {correct: "right", wrong: "wrong", abstained: "said it can't answer", no_answer: "no answer",
+               invented: "invented an answer"};
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const pct = v => `${(100 * v).toFixed(1)}%`;
+const barCell = v => `${pct(v)}<span class="barbg"><span class="bar" style="width:${100 * v}%"></span></span>`;
+const num = v => typeof v === "number" ? v.toLocaleString("en-US", {maximumFractionDigits: 4}) : esc(v);
+const show = v => v === null || v === undefined ? "–" : Array.isArray(v)
+  ? v.map(r => `${esc(r[0])}: ${num(r[1])}`).join(" · ") : num(v);
+
+fetch("results.json").then(r => r.json()).then(data => {
+  const row = (m, a) => data.summary.find(r => r.model === m && r.arm === a);
+  const range = a => {
+    const v = MODELS.map(([m]) => row(m, a)).filter(Boolean);
+    return [Math.min(...v.map(r => r.in_layer_accuracy)), Math.max(...v.map(r => r.in_layer_accuracy))];
+  };
+  document.getElementById("cards").innerHTML = ARMS.map(([a, label]) => {
+    const [lo, hi] = range(a);
+    return `<div class="card"><div class="label">${label}</div><div class="big">${(100 * lo).toFixed(0)}–${(100 * hi).toFixed(0)}%</div>
+      <div class="label">right on the 64 covered questions, across the four models</div></div>`;
+  }).join("");
+
+  document.querySelector("#board tbody").innerHTML = MODELS.map(([m, name]) => {
+    const r = ARMS.map(([a]) => row(m, a));
+    const cost = r.map(x => `$${(x.cost_usd / x.questions).toFixed(4)}`).join(" · ");
+    return `<tr><td>${name}</td>${r.map(x => `<td>${barCell(x.accuracy)}</td>`).join("")}
+      <td>${barCell(r[2].in_layer_accuracy)}</td><td>${cost}</td></tr>`;
+  }).join("");
+
+  const count = tag => data.questions.filter(q => q.tags.includes(tag)).length;
+  document.querySelector("#traps tbody").innerHTML = Object.entries(data.by_tag).map(([tag, arms]) =>
+    `<tr><td>${esc(tag)}</td><td>${count(tag)}</td>${ARMS.map(([a]) => `<td>${barCell(arms[a] ?? 0)}</td>`).join("")}</tr>`
+  ).join("");
+
+  const tags = ["all", ...Object.keys(data.by_tag)];
+  let active = "all", selected = null;
+  const filters = document.getElementById("filters");
+  filters.innerHTML = tags.map(t => `<button class="chip" data-tag="${esc(t)}" aria-pressed="${t === active}">${esc(t)}</button>`).join("");
+  filters.addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    active = b.dataset.tag;
+    filters.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.tag === active));
+    render();
+  });
+
+  function render() {
+    const qs = data.questions.filter(q => active === "all" || q.tags.includes(active));
+    document.querySelector("#questions tbody").innerHTML = qs.map(q => `<tr class="q${q.id === selected ? " selected" : ""}" data-id="${q.id}">
+      <td>${esc(q.question)}<br><span class="tag">${q.tags.map(esc).join(" · ")}${q.in_semantic_layer || q.kind === "none" ? "" : " · not in the semantic layer"}</span></td>
+      ${ARMS.map(([a]) => `<td>${MODELS.map(([m, name]) => {
+        const g = (q.results[`${m}|${a}`] || {}).grade || "no_answer";
+        return `<i class="dot ${g}" title="${esc(name)}: ${GRADE[g]}"></i>`;
+      }).join("")}</td>`).join("")}</tr>`).join("");
+  }
+  render();
+
+  document.querySelector("#questions tbody").addEventListener("click", e => {
+    const tr = e.target.closest("tr"); if (!tr) return;
+    selected = tr.dataset.id; render();
+    const q = data.questions.find(x => x.id === selected);
+    const expected = q.kind === "none" ? `The data can't answer it. ${esc(q.notes)}` : show(q.answer);
+    document.getElementById("detail").innerHTML = `<div class="detail"><h3>${esc(q.question)}</h3>
+      <div>Expected: <b>${expected}</b></div>
+      ${ARMS.map(([a, label]) => MODELS.map(([m, name]) => {
+        const r = q.results[`${m}|${a}`]; if (!r) return "";
+        const last = r.sql && r.sql.length ? `<br><code>${esc(typeof r.sql[0] === "string" ? r.sql[0] : JSON.stringify(r.sql[0]))}</code>` : "";
+        return `<div class="ans"><i class="dot ${r.grade}"></i> <b>${name}</b>, ${label}: ${show(r.got)}
+          <div class="muted">${esc(r.why)}</div>${last}</div>`;
+      }).join("")).join("")}</div>`;
+    document.getElementById("detail").scrollIntoView({behavior: "smooth", block: "nearest"});
+  });
+});
+</script>
+</body>
+</html>

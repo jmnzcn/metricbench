@@ -1,0 +1,148 @@
+metrics:
+  - name: orders_placed
+    label: Orders placed
+    description: Every order, in any status.
+    type: simple
+    type_params:
+      measure: order_count
+
+  - name: orders
+    label: Orders
+    description: Valid orders, that is, not canceled or unavailable.
+    type: simple
+    type_params:
+      measure: order_count
+    filter: "{{ Dimension('order__is_valid') }}"
+
+  - name: canceled_orders
+    label: Canceled orders
+    description: Orders with status canceled (unavailable does not count).
+    type: simple
+    type_params:
+      measure: order_count
+    filter: "{{ Dimension('order__is_canceled') }}"
+
+  - name: cancellation_rate
+    label: Cancellation rate
+    description: Canceled orders divided by orders placed.
+    type: ratio
+    type_params:
+      numerator: canceled_orders
+      denominator: orders_placed
+
+  - name: gmv
+    label: GMV
+    description: Gross merchandise value. Sum of item prices of valid orders, without freight.
+    type: simple
+    type_params:
+      measure: item_price
+    filter: "{{ Dimension('order__is_valid') }}"
+
+  - name: freight
+    label: Freight
+    description: Sum of freight charged on items of valid orders.
+    type: simple
+    type_params:
+      measure: item_freight
+    filter: "{{ Dimension('order__is_valid') }}"
+
+  - name: items_sold
+    label: Items sold
+    description: Number of items in valid orders.
+    type: simple
+    type_params:
+      measure: item_count
+    filter: "{{ Dimension('order__is_valid') }}"
+
+  - name: average_order_value
+    label: Average order value
+    description: GMV divided by orders.
+    type: ratio
+    type_params:
+      numerator: gmv
+      denominator: orders
+
+  - name: payments_received
+    label: Payments received
+    description: What customers paid for valid orders, including freight, vouchers and installment interest.
+    type: simple
+    type_params:
+      measure: payment_value
+    filter: "{{ Dimension('order__is_valid') }}"
+
+  - name: active_customers
+    label: Active customers
+    description: Distinct people (customer_unique_id) with at least one valid order in the period.
+    type: simple
+    type_params:
+      measure: active_customer_count
+    filter: "{{ Dimension('order__is_valid') }}"
+
+  - name: new_customers
+    label: New customers
+    description: People whose first valid order falls in the period.
+    type: simple
+    type_params:
+      measure: customer_count
+
+  - name: repeat_customers
+    label: Repeat customers
+    description: People with two or more valid orders ever, counted in the period of their first order.
+    type: simple
+    type_params:
+      measure: repeat_customer_count
+
+  - name: repeat_customer_rate
+    label: Repeat customer rate
+    description: Repeat customers divided by new customers.
+    type: ratio
+    type_params:
+      numerator: repeat_customers
+      denominator: new_customers
+
+  - name: delivered_orders
+    label: Delivered orders
+    description: Orders with status delivered and a delivery date.
+    type: simple
+    type_params:
+      measure: order_count
+    filter: "{{ Dimension('order__is_delivered') }}"
+
+  - name: late_deliveries
+    label: Late deliveries
+    description: Delivered orders that arrived on a later day than the estimated delivery date.
+    type: simple
+    type_params:
+      measure: order_count
+    filter: "{{ Dimension('order__is_late') }}"
+
+  - name: late_delivery_rate
+    label: Late delivery rate
+    description: Late deliveries divided by delivered orders.
+    type: ratio
+    type_params:
+      numerator: late_deliveries
+      denominator: delivered_orders
+
+  - name: average_delivery_days
+    label: Average delivery days
+    description: Average days from purchase to delivery, for delivered orders.
+    type: simple
+    type_params:
+      measure: delivery_days_avg
+    filter: "{{ Dimension('order__is_delivered') }}"
+
+  - name: average_review_score
+    label: Average review score
+    description: Average review score (1 to 5) over orders with a review; when an order has several reviews, the most recently answered one counts.
+    type: simple
+    type_params:
+      measure: review_score_avg
+
+  - name: average_installments
+    label: Average installments
+    description: Average number of installments per payment, for payments of valid orders.
+    type: simple
+    type_params:
+      measure: payment_installments_avg
+    filter: "{{ Dimension('order__is_valid') }}"

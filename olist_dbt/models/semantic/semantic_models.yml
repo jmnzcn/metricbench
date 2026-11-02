@@ -1,0 +1,161 @@
+semantic_models:
+  - name: orders
+    description: One row per order. Time is the purchase timestamp.
+    model: ref('orders')
+    defaults:
+      agg_time_dimension: purchased_at
+    entities:
+      - name: order
+        type: primary
+        expr: order_id
+      - name: customer
+        type: foreign
+        expr: customer_unique_id
+    dimensions:
+      - name: purchased_at
+        type: time
+        type_params:
+          time_granularity: day
+      - name: order_status
+        type: categorical
+        description: "delivered, shipped, canceled, unavailable, invoiced, processing, created or approved."
+      - name: customer_state
+        type: categorical
+        description: Two-letter Brazilian state of the customer at the time of the order (e.g. SP, RJ).
+      - name: customer_city
+        type: categorical
+      - name: is_valid
+        type: categorical
+        description: True unless the order was canceled or unavailable.
+      - name: is_canceled
+        type: categorical
+      - name: is_delivered
+        type: categorical
+        description: True when the status is delivered and there is a delivery date.
+      - name: is_late
+        type: categorical
+        description: For delivered orders, true when delivered on a later day than the estimate.
+    measures:
+      - name: order_count
+        expr: "1"
+        agg: sum
+      - name: active_customer_count
+        expr: customer_unique_id
+        agg: count_distinct
+      - name: delivery_days_avg
+        expr: delivery_days
+        agg: average
+      - name: review_score_avg
+        expr: review_score
+        agg: average
+
+  - name: order_items
+    description: One row per item sold. Time is the purchase timestamp of its order.
+    model: ref('order_items')
+    defaults:
+      agg_time_dimension: purchased_at
+    entities:
+      - name: order_item
+        type: primary
+        expr: order_item_id
+      - name: order
+        type: foreign
+        expr: order_id
+      - name: product
+        type: foreign
+        expr: product_id
+      - name: seller
+        type: foreign
+        expr: seller_id
+    dimensions:
+      - name: purchased_at
+        type: time
+        type_params:
+          time_granularity: day
+    measures:
+      - name: item_price
+        expr: price
+        agg: sum
+      - name: item_freight
+        expr: freight_value
+        agg: sum
+      - name: item_count
+        expr: "1"
+        agg: sum
+
+  - name: payments
+    description: One row per payment. An order can be paid in several parts.
+    model: ref('payments')
+    defaults:
+      agg_time_dimension: purchased_at
+    entities:
+      - name: payment
+        type: primary
+        expr: payment_id
+      - name: order
+        type: foreign
+        expr: order_id
+    dimensions:
+      - name: purchased_at
+        type: time
+        type_params:
+          time_granularity: day
+      - name: payment_type
+        type: categorical
+        description: credit_card, boleto, voucher, debit_card or not_defined.
+      - name: payment_installments
+        type: categorical
+    measures:
+      - name: payment_value
+        agg: sum
+      - name: payment_installments_avg
+        expr: payment_installments
+        agg: average
+
+  - name: customers
+    description: One row per person (customer_unique_id) with at least one valid order. Time is their first valid order.
+    model: ref('customers')
+    defaults:
+      agg_time_dimension: first_order_at
+    entities:
+      - name: customer
+        type: primary
+        expr: customer_unique_id
+    dimensions:
+      - name: first_order_at
+        type: time
+        type_params:
+          time_granularity: day
+      - name: first_order_state
+        type: categorical
+        description: State of the first valid order of the customer.
+    measures:
+      - name: customer_count
+        expr: "1"
+        agg: sum
+      - name: repeat_customer_count
+        expr: "case when is_repeat then 1 else 0 end"
+        agg: sum
+
+  - name: products
+    model: ref('products')
+    entities:
+      - name: product
+        type: primary
+        expr: product_id
+    dimensions:
+      - name: category
+        type: categorical
+        description: Product category in English; the Portuguese name when Olist has no translation; unknown when missing.
+
+  - name: sellers
+    model: ref('sellers')
+    entities:
+      - name: seller
+        type: primary
+        expr: seller_id
+    dimensions:
+      - name: seller_state
+        type: categorical
+      - name: seller_city
+        type: categorical

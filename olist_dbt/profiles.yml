@@ -1,0 +1,7 @@
+olist:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('METRICBENCH_DB', '../data/olist.duckdb') }}"
+      threads: 4

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.egg-info/
+.env
+data/
+olist_dbt/target/
+olist_dbt/logs/
+olist_dbt/dbt_packages/
+logs/
+.pytest_cache/
+olist_dbt/.user.yml
