@@ -1,10 +1,11 @@
 """The three ways an agent can reach the data, and the loop that asks it one question.
 
   sql           SQL over the raw tables, with their schema. What you get by pointing a model at the database.
+  sql+rule      the same as sql, plus one sentence: which orders count. Not run yet (see README, "Not run yet").
   sql+glossary  the same, plus the official metric definitions.
   semantic      the metric definitions and the semantic layer (MetricFlow) as tools. No SQL.
 
-All three get the same instructions for answering, so differences come from how the data is reached.
+All of them get the same instructions for answering, so differences come from how the data is reached.
 """
 
 from __future__ import annotations
@@ -24,7 +25,14 @@ from .backends import Backend
 from .data import RAW_DB
 from .semantic import SemanticLayer
 
-ARMS = ("sql", "sql+glossary", "semantic")
+ARMS = ("sql", "sql+rule", "sql+glossary", "semantic")
+# The one convention almost every question depends on. The second sentence is the glossary's; the first sums up
+# what the glossary says metric by metric. The sql+rule arm gets this and nothing else, to measure how much of
+# the gap between sql and sql+glossary is this single convention. It names no exception on purpose: the
+# glossary's two exceptions (orders placed and canceled orders count every status) are definitions of their
+# own, so a model may get those questions wrong here.
+VALID_ORDER_RULE = ("Company convention: metrics count only valid orders. "
+                    "A valid order is any order whose status is not `canceled` or `unavailable`.")
 GLOSSARY = (Path(__file__).with_name("glossary.md")).read_text(encoding="utf-8")
 MAX_ROWS = 50
 
@@ -148,6 +156,8 @@ class Tools:
     """The tools of one arm, plus the submitted answer."""
 
     def __init__(self, arm: str, semantic: SemanticLayer | None = None):
+        if arm not in ARMS:
+            raise ValueError(f"unknown arm {arm} ({', '.join(ARMS)})")
         self.arm = arm
         self.answer: dict | None = None
         self.calls: list[dict] = []
@@ -162,7 +172,8 @@ class Tools:
         if self.arm == "semantic":
             return f"{ANSWERING}\n\n{SEMANTIC_HELP}\n\n{GLOSSARY}"
         db = f"You can query the company database (DuckDB SQL) with run_sql. Tables:\n{schema_text(self.con)}"
-        return f"{ANSWERING}\n\n{db}" + (f"\n\n{GLOSSARY}" if self.arm == "sql+glossary" else "")
+        extra = {"sql+glossary": GLOSSARY, "sql+rule": VALID_ORDER_RULE}.get(self.arm)
+        return f"{ANSWERING}\n\n{db}" + (f"\n\n{extra}" if extra else "")
 
     def _sql(self, query: str) -> str:
         timer = threading.Timer(60, self.con.interrupt)

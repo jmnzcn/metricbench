@@ -1,0 +1,374 @@
+{
+ "answerable": [
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "semantic",
+   "questions": 68,
+   "correct": 63,
+   "wrong": 1,
+   "abstained": 4,
+   "no_answer": 0,
+   "accuracy": 0.9264705882352942,
+   "low": 0.8507462686567164,
+   "high": 0.9850746268656716,
+   "accuracy_when_answered": 0.9264705882352942
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "sql",
+   "questions": 68,
+   "correct": 27,
+   "wrong": 41,
+   "abstained": 0,
+   "no_answer": 0,
+   "accuracy": 0.39705882352941174,
+   "low": 0.24193548387096775,
+   "high": 0.5571428571428572,
+   "accuracy_when_answered": 0.39705882352941174
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "sql+glossary",
+   "questions": 68,
+   "correct": 65,
+   "wrong": 3,
+   "abstained": 0,
+   "no_answer": 0,
+   "accuracy": 0.9558823529411765,
+   "low": 0.8939393939393939,
+   "high": 1.0,
+   "accuracy_when_answered": 0.9558823529411765
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "semantic",
+   "questions": 68,
+   "correct": 64,
+   "wrong": 0,
+   "abstained": 4,
+   "no_answer": 0,
+   "accuracy": 0.9411764705882353,
+   "low": 0.8727272727272727,
+   "high": 0.987012987012987,
+   "accuracy_when_answered": 0.9411764705882353
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "sql",
+   "questions": 68,
+   "correct": 23,
+   "wrong": 45,
+   "abstained": 0,
+   "no_answer": 0,
+   "accuracy": 0.3382352941176471,
+   "low": 0.1951219512195122,
+   "high": 0.48,
+   "accuracy_when_answered": 0.3382352941176471
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "sql+glossary",
+   "questions": 68,
+   "correct": 68,
+   "wrong": 0,
+   "abstained": 0,
+   "no_answer": 0,
+   "accuracy": 1.0,
+   "low": 1.0,
+   "high": 1.0,
+   "accuracy_when_answered": 1.0
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "semantic",
+   "questions": 68,
+   "correct": 64,
+   "wrong": 0,
+   "abstained": 4,
+   "no_answer": 0,
+   "accuracy": 0.9411764705882353,
+   "low": 0.8727272727272727,
+   "high": 0.987012987012987,
+   "accuracy_when_answered": 0.9411764705882353
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "sql",
+   "questions": 68,
+   "correct": 27,
+   "wrong": 41,
+   "abstained": 0,
+   "no_answer": 0,
+   "accuracy": 0.39705882352941174,
+   "low": 0.2597402597402597,
+   "high": 0.5352112676056338,
+   "accuracy_when_answered": 0.39705882352941174
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "sql+glossary",
+   "questions": 68,
+   "correct": 66,
+   "wrong": 2,
+   "abstained": 0,
+   "no_answer": 0,
+   "accuracy": 0.9705882352941176,
+   "low": 0.9016393442622951,
+   "high": 1.0,
+   "accuracy_when_answered": 0.9705882352941176
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "semantic",
+   "questions": 68,
+   "correct": 64,
+   "wrong": 0,
+   "abstained": 4,
+   "no_answer": 0,
+   "accuracy": 0.9411764705882353,
+   "low": 0.8727272727272727,
+   "high": 0.987012987012987,
+   "accuracy_when_answered": 0.9411764705882353
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "sql",
+   "questions": 68,
+   "correct": 8,
+   "wrong": 19,
+   "abstained": 0,
+   "no_answer": 41,
+   "accuracy": 0.11764705882352941,
+   "low": 0.03389830508474576,
+   "high": 0.22727272727272727,
+   "accuracy_when_answered": 0.2962962962962963
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "sql+glossary",
+   "questions": 68,
+   "correct": 62,
+   "wrong": 0,
+   "abstained": 0,
+   "no_answer": 6,
+   "accuracy": 0.9117647058823529,
+   "low": 0.8461538461538461,
+   "high": 0.9682539682539683,
+   "accuracy_when_answered": 1.0
+  }
+ ],
+ "misses": [
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "semantic",
+   "wrong": 1,
+   "within 1%": 0,
+   "1% to 5%": 0,
+   "over 5%": 0,
+   "wrong table": 1,
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "sql",
+   "wrong": 41,
+   "within 1%": 11,
+   "1% to 5%": 12,
+   "over 5%": 12,
+   "wrong table": 6,
+   "no number": 0,
+   "wrong_numbers": 35,
+   "offers_expected": 5
+  },
+  {
+   "model": "claude-haiku-5-5",
+   "arm": "sql+glossary",
+   "wrong": 3,
+   "within 1%": 0,
+   "1% to 5%": 3,
+   "over 5%": 0,
+   "wrong table": 0,
+   "no number": 0,
+   "wrong_numbers": 3,
+   "offers_expected": 2
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "semantic",
+   "wrong": 0,
+   "within 1%": 0,
+   "1% to 5%": 0,
+   "over 5%": 0,
+   "wrong table": 0,
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "sql",
+   "wrong": 45,
+   "within 1%": 15,
+   "1% to 5%": 11,
+   "over 5%": 10,
+   "wrong table": 9,
+   "no number": 0,
+   "wrong_numbers": 36,
+   "offers_expected": 14
+  },
+  {
+   "model": "claude-opus-5-5",
+   "arm": "sql+glossary",
+   "wrong": 0,
+   "within 1%": 0,
+   "1% to 5%": 0,
+   "over 5%": 0,
+   "wrong table": 0,
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "semantic",
+   "wrong": 0,
+   "within 1%": 0,
+   "1% to 5%": 0,
+   "over 5%": 0,
+   "wrong table": 0,
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "sql",
+   "wrong": 41,
+   "within 1%": 16,
+   "1% to 5%": 10,
+   "over 5%": 11,
+   "wrong table": 4,
+   "no number": 0,
+   "wrong_numbers": 37,
+   "offers_expected": 11
+  },
+  {
+   "model": "claude-sonnet-5-5",
+   "arm": "sql+glossary",
+   "wrong": 2,
+   "within 1%": 1,
+   "1% to 5%": 1,
+   "over 5%": 0,
+   "wrong table": 0,
+   "no number": 0,
+   "wrong_numbers": 2,
+   "offers_expected": 2
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "semantic",
+   "wrong": 0,
+   "within 1%": 0,
+   "1% to 5%": 0,
+   "over 5%": 0,
+   "wrong table": 0,
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "sql",
+   "wrong": 19,
+   "within 1%": 8,
+   "1% to 5%": 9,
+   "over 5%": 0,
+   "wrong table": 2,
+   "no number": 0,
+   "wrong_numbers": 17,
+   "offers_expected": 3
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "arm": "sql+glossary",
+   "wrong": 0,
+   "within 1%": 0,
+   "1% to 5%": 0,
+   "over 5%": 0,
+   "wrong table": 0,
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
+  }
+ ],
+ "tolerance": [
+  {
+   "arm": "semantic",
+   "questions": 272,
+   "0.001": 0.9375,
+   "0.01": 0.9375,
+   "0.05": 0.9375
+  },
+  {
+   "arm": "sql",
+   "questions": 272,
+   "0.001": 0.3125,
+   "0.01": 0.5220588235294118,
+   "0.05": 0.7058823529411765
+  },
+  {
+   "arm": "sql+glossary",
+   "questions": 272,
+   "0.001": 0.9595588235294118,
+   "0.01": 0.9632352941176471,
+   "0.05": 0.9779411764705882
+  }
+ ],
+ "agreement": [
+  {
+   "arm": "semantic",
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5",
+    "claude-sonnet-5-5",
+    "gemini-3.8-flash"
+   ],
+   "left_out": [],
+   "questions": 68,
+   "all_right": 63,
+   "all_wrong": 4,
+   "split": 1
+  },
+  {
+   "arm": "sql",
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5",
+    "claude-sonnet-5-5"
+   ],
+   "left_out": [
+    "gemini-3.8-flash"
+   ],
+   "questions": 68,
+   "all_right": 17,
+   "all_wrong": 33,
+   "split": 18
+  },
+  {
+   "arm": "sql+glossary",
+   "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5",
+    "claude-sonnet-5-5",
+    "gemini-3.8-flash"
+   ],
+   "left_out": [],
+   "questions": 68,
+   "all_right": 58,
+   "all_wrong": 0,
+   "split": 10
+  }
+ ]
+}

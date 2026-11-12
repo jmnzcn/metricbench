@@ -75,16 +75,33 @@
   <div class="cards" id="cards"></div>
 
   <h2>Accuracy by model and access</h2>
-  <p class="muted">All 78 questions: 64 the semantic layer covers, 4 answerable only from raw data, 10 the data cannot answer.
-    A number counts as right within 0.1%.</p>
+  <p class="muted">The 68 questions the data can answer: 64 the semantic layer covers and 4 answerable only from raw data.
+    The other 10 can't be answered, and every model said so in every arm. A number counts as right within 0.1%.
+    Gemini ran out of its 14 turns on 41 raw SQL questions and on 6 with the glossary; those count as not right.</p>
   <div class="table-wrap"><table id="board">
     <thead><tr><th>Model</th><th>Raw SQL</th><th>SQL + glossary</th><th>Semantic layer</th>
       <th>Semantic, covered questions</th><th>Cost / question (SQL · glossary · semantic)</th></tr></thead>
     <tbody></tbody>
   </table></div>
 
+  <h2>Why raw SQL misses</h2>
+  <p class="muted">Each of the 146 wrong raw SQL answers, matched against the answer under 14 wrong readings of the
+    question. Three out of four are one convention: which orders count.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>The model's answer matches</th><th>Wrong answers</th></tr></thead>
+    <tbody>
+      <tr><td>Counting every order status, canceled and unavailable included</td><td>109</td></tr>
+      <tr><td>Late meaning after the estimated timestamp, not on a later calendar day</td><td>18</td></tr>
+      <tr><td>Every order status, and payments taken as revenue</td><td>5</td></tr>
+      <tr><td>Freight added to the item price</td><td>5</td></tr>
+      <tr><td>Other readings and pairs (freight, payments, the items–payments join)</td><td>4</td></tr>
+      <tr><td>None of the readings tried</td><td>5</td></tr>
+    </tbody>
+  </table></div>
+
   <h2>Accuracy by trap</h2>
-  <p class="muted">All four models together. A question can have several traps.</p>
+  <p class="muted">All four models together, all 78 questions. A question can have several traps, and a low number
+    here does not mean the models fell into that trap: most questions with any tag also depend on which orders count.</p>
   <div class="table-wrap"><table id="traps">
     <thead><tr><th>Trap</th><th>Questions</th><th>Raw SQL</th><th>SQL + glossary</th><th>Semantic layer</th></tr></thead>
     <tbody></tbody>
@@ -136,7 +153,7 @@ fetch("results.json").then(r => r.json()).then(data => {
   document.querySelector("#board tbody").innerHTML = MODELS.map(([m, name]) => {
     const r = ARMS.map(([a]) => row(m, a));
     const cost = r.map(x => `$${(x.cost_usd / x.questions).toFixed(4)}`).join(" · ");
-    return `<tr><td>${name}</td>${r.map(x => `<td>${barCell(x.accuracy)}</td>`).join("")}
+    return `<tr><td>${name}</td>${r.map(x => `<td>${barCell(x.answerable_accuracy)}</td>`).join("")}
       <td>${barCell(r[2].in_layer_accuracy)}</td><td>${cost}</td></tr>`;
   }).join("");
 
