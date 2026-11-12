@@ -204,6 +204,11 @@ def text(result: dict[str, Any], arm: str = "sql") -> str:
     return "\n".join(out)
 
 
+def listing(result: dict[str, Any]) -> str:
+    """One line per wrong answer: model, arm, question and the cause it was given."""
+    return "\n".join(f"{a['model']}\t{a['arm']}\t{a['question_id']}\t{a['cause']}" for a in result["answers"])
+
+
 def markdown(result: dict[str, Any], arm: str = "sql") -> str:
     """The same summary as a table, for the CI job summary."""
     total: Counter = Counter()

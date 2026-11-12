@@ -4,7 +4,7 @@ import duckdb
 import pytest
 
 from metricbench import cli
-from metricbench.causes import UNEXPLAINED, VARIANTS, answers, classify, combos, explain, variant_answers
+from metricbench.causes import UNEXPLAINED, VARIANTS, answers, classify, combos, explain, listing, variant_answers
 from metricbench.questions import QUESTIONS, REFERENCE_VIEWS
 
 SCHEMA = """
@@ -142,6 +142,7 @@ def test_classify_counts_only_wrong_answers_of_the_first_run(computed):
                          "causes": {"only canceled excluded or customer_id as the customer": 1, UNEXPLAINED: 1}}
     assert rows["n"]["causes"] == {"every order status": 1}
     assert len(result["answers"]) == 3
+    assert "n\tsql\tgmv_2018\tevery order status" in listing(result).splitlines()
 
 
 def test_the_command_refuses_without_the_database(tmp_path, monkeypatch):
@@ -149,3 +150,20 @@ def test_the_command_refuses_without_the_database(tmp_path, monkeypatch):
     monkeypatch.setattr(data, "RAW_DB", tmp_path / "missing.duckdb")
     with pytest.raises(SystemExit, match="metricbench build"):
         cli.cmd_causes(None)
+
+
+def test_the_command_prints_the_summary_and_the_list(db, monkeypatch, capsys, tmp_path):
+    import argparse
+
+    from metricbench import data
+    reference, _ = variant_answers(db)
+    monkeypatch.setattr(data, "RAW_DB", db)
+    monkeypatch.setattr(cli, "load_gold", lambda: [{**gold_for(reference, "gmv_2018"), "tags": []}])
+    monkeypatch.setattr(cli, "load_runs", lambda: [{"question_id": "gmv_2018", "model": "m", "arm": "sql",
+                                                    "run": 1, "answer": number(320.0)}])
+    out = tmp_path / "causes.json"
+    cli.cmd_causes(argparse.Namespace(json=str(out), summary=str(tmp_path / "summary.md"), list=True))
+    printed = capsys.readouterr().out
+    assert "1  every order status" in printed and "m\tsql\tgmv_2018\tevery order status" in printed
+    assert '"cause": "every order status"' in out.read_text()
+    assert "| every order status | 1 |" in (tmp_path / "summary.md").read_text()

@@ -196,13 +196,15 @@ def cmd_analyze(args) -> None:
 
 
 def cmd_causes(args) -> None:
-    from .causes import classify, markdown, text, variant_answers
+    from .causes import classify, listing, markdown, text, variant_answers
     from .data import RAW_DB
     if not RAW_DB.exists():
         raise SystemExit("the raw database is missing: run `metricbench build` first")
     _, by_combo = variant_answers(RAW_DB)
     result = classify(load_runs(), load_gold(), by_combo)
     print(text(result))
+    if args.list:
+        print("\nEvery wrong answer (model, arm, question, cause):\n" + listing(result))
     if args.json:
         Path(args.json).write_text(json.dumps(result, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     if args.summary:
@@ -302,6 +304,7 @@ def main() -> None:
     an.add_argument("--json", help="also write the analysis to this file")
     ca = sub.add_parser("causes", help="which reading of the question explains each wrong answer; calls no model")
     ca.add_argument("--json", help="also write every wrong answer's cause to this file")
+    ca.add_argument("--list", action="store_true", help="also print every wrong answer with its cause")
     ca.add_argument("--summary", help="append a Markdown summary to this file (the CI job summary)")
     est = sub.add_parser("estimate", help="what a run would cost, from the saved runs; calls no model")
     est.add_argument("--arm", choices=["sql", "sql+rule", "sql+glossary", "semantic"], required=True)
