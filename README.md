@@ -13,8 +13,9 @@ orders from Brazil), every one with a known answer, asked to four models in thre
 - **SQL + glossary**: the same, plus one page with the company's metric definitions.
 - **Semantic layer**: the definitions and a dbt + MetricFlow semantic layer as tools, with no SQL.
 
-The short version: one page of definitions took every model from 12–40% to 91–100%. The semantic layer
-added little accuracy on top of that. What it added is that the models stopped disagreeing with each
+The short version: one page of definitions took every model from 12–40% to 91–100%, and three out of
+four raw-SQL misses come down to one sentence of it: which orders count. The semantic layer added
+little accuracy on top of that. What it added is that the models stopped disagreeing with each
 other, and that a question it can't answer gets "I can't answer that" and not a number.
 
 There is a [results page](https://jmnzcn.github.io/metricbench/) with every answer, the SQL behind it
@@ -77,20 +78,28 @@ Each of those is a defensible choice. None is the company's metric, and nothing 
 which one it is. So "34% right" does not mean the model fails at SQL two times out of three. It means
 that two times out of three its reading of the question was not mine.
 
-**How far off the wrong answers are.** Of the 127 wrong raw-SQL answers from the three Claude models:
+**Three out of four misses are one convention.** `metricbench causes` recomputes every answer under
+14 wrong readings of the question (and their pairs) and checks which one each wrong answer matches.
+Of the 146 wrong raw-SQL answers from the four models:
 
-| Distance from the expected number | Wrong answers | What usually causes it |
-|---|---:|---|
-| Within 1% | 42 | Counting canceled and unavailable orders (0.6%) |
-| 1% to 5% | 33 | Joining items and payments (3.9%), counting `customer_id` (4.7%) |
-| Over 5% | 33 | Freight inside GMV (17%), revenue per item, timestamps for late deliveries |
-| A table with the wrong rows or order | 19 | |
+| The model's answer matches | Wrong answers |
+|---|---:|
+| Counting every order status, canceled and unavailable included | 109 |
+| Late meaning after the estimated timestamp, not on a later calendar day | 18 |
+| Every order status, and payments taken as revenue | 5 |
+| Freight added to the item price | 5 |
+| Other pairs of the readings above | 4 |
+| None of the readings tried | 5 |
 
-The causes are the traps in the next section, matched by the size of their effect; I did not check
-each answer's SQL one by one. A third of the misses are within 1%, and the explanations I read for
-those say the same thing: every order status was counted. Scored at 1% and not 0.1%, raw SQL goes from 31% to 52% over the
-four models, and at 5% to 71%. With definitions the tolerance hardly matters (96–98%). A finance team
-won't accept a GMV that's off by 1%, so 0.1% is the score here, but the 31% depends on that choice.
+One sentence in the glossary ("a valid order is any order whose status is not canceled or
+unavailable") accounts for 109 of the 146. The traps I expected to matter more did not show up: no
+wrong answer matched counting `customer_id` or averaging every review, and the join of items and
+payments appears once, together with freight.
+
+That convention often moves the answer by less than 1%, so the tolerance matters: scored at 1% and
+not 0.1%, raw SQL goes from 31% to 52% over the four models, and at 5% to 71%. With definitions it
+hardly matters (96–98%). A finance team won't accept a GMV that's off by 1%, so 0.1% is the score
+here, but the 31% depends on that choice.
 
 **The models miss the same questions.** On raw SQL the three Claude models were all wrong on 33 of
 the 68 questions and all right on 17; they split on only 18. A larger model does not help (Opus
@@ -129,7 +138,9 @@ company's number:
 | Several reviews per order | average every review | under 0.1%: this one barely matters |
 | Missing and untranslated categories | inner join the translation | drops products |
 
-Each question is tagged with its traps, and the results page breaks accuracy down by tag.
+Each question is tagged with its traps, and the results page breaks accuracy down by tag. The table
+says what each trap would cost, not how often the models fell into it; that is in "What I found", and
+for most of these the answer is never.
 
 ## How the answers are known
 
@@ -171,6 +182,7 @@ them.
 - **A fourth arm, `sql+rule`**: raw SQL plus the one convention about which orders count, and nothing
   else. It measures how much of the gap between raw SQL and the glossary is that single convention.
   It gives no exceptions, so the questions about orders placed and canceled orders may go wrong.
+  Since that convention alone matches 109 of the 146 raw-SQL misses, this is the experiment to run first.
   `metricbench run --arm sql+rule --model claude-haiku-5-5`
 - **Repeated runs**, to replace the one-run caveat with a spread: `--run 2`, `--run 3`... Each is
   saved in its own file and `metricbench report` shows the lowest and highest run.
@@ -211,10 +223,9 @@ the data can't answer and questions the semantic layer doesn't cover, to see how
   which is a fact about the data, so part of its effect is a warning about a trap.
 - Olist is a well-known public dataset. The models have very likely seen its schema and analyses of
   it, so raw SQL on a private warehouse could do worse than here.
-- The causes in the table of misses are inferred from the size of the error, not read from each query.
-  `metricbench causes` checks them: it recomputes every answer under each wrong reading (every order
-  status, `customer_id`, freight in GMV...) and matches the models' wrong answers against those. CI
-  runs it and keeps the result; its numbers are not in this README yet.
+- A cause is assigned when a wrong answer equals, within 0.1%, the answer under one of the readings
+  `metricbench causes` tries. It is a match on the number, not a reading of the model's SQL, and 5 of
+  the 146 raw-SQL misses match nothing. CI runs it on every push and keeps the full list as an artifact.
 
 ## Data
 

@@ -198,6 +198,9 @@ def text(result: dict[str, Any], arm: str = "sql") -> str:
     wrong = sum(total.values())
     out += ["", f"Causes of the {wrong} wrong answers on {arm}, all models:"]
     out += [f"  {n:4d}  {cause}" for cause, n in total.most_common()]
+    for r in result["summary"]:
+        if r["arm"] == arm:
+            out += ["", f"{r['model']}, {arm}:"] + [f"  {n:4d}  {cause}" for cause, n in r["causes"].items()]
     return "\n".join(out)
 
 
