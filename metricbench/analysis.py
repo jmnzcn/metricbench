@@ -25,6 +25,15 @@ RESAMPLES = 5000
 # A model that leaves more than this share unanswered is not compared question by question.
 MAX_UNANSWERED = 0.10
 
+DEFAULT_TURNS = 14
+
+
+def arm_label(ep: dict) -> str:
+    """The arm as reported: a run with a different turn budget is its own row, never mixed with the default."""
+    turns = ep.get("max_turns", DEFAULT_TURNS)
+    return ep["arm"] if turns == DEFAULT_TURNS else f"{ep['arm']} ({turns} turns)"
+
+
 _PERIOD = re.compile(r"_\d{4}(-\d{2}|h\d)?")
 _STATE = re.compile(r"_(SP|RJ|MG|BA|AL|RR)(?=_|$)")
 
@@ -76,12 +85,12 @@ def interval(right_by_family: dict[str, list[bool]], seed: int = 0) -> tuple[flo
 
 
 def _groups(episodes: Iterable[dict], gold: dict[str, dict]) -> dict[tuple[str, str], list[dict]]:
-    """Answerable episodes of the first run of each model and arm."""
+    """Answerable episodes of the first run of each model and reported arm."""
     groups: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for ep in episodes:
         q = gold.get(ep["question_id"])
         if q and q["kind"] != "none" and ep.get("run", 1) == 1:
-            groups[(ep["model"], ep["arm"])].append(ep)
+            groups[(ep["model"], arm_label(ep))].append(ep)
     return dict(sorted(groups.items()))
 
 

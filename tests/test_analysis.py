@@ -10,7 +10,8 @@ from metricbench.analysis import (
     relative_error,
     tolerance,
 )
-from metricbench.cli import arm_label, estimate, run_file
+from metricbench.analysis import arm_label
+from metricbench.cli import estimate, run_file
 
 
 def q(qid, answer=100.0, kind="number", **kw):
@@ -93,3 +94,10 @@ def test_estimate_uses_the_saved_cost_of_the_nearest_arm():
     rows = estimate(episodes, "sql+rule", None, runs=3, questions=10)
     assert rows[0]["basis"] == "sql" and abs(rows[0]["total"] - 0.3) < 1e-9
     assert rows[1]["total"] is None  # m2 has no sql run to estimate from
+
+
+def test_a_different_turn_budget_is_never_mixed_with_the_default():
+    episodes = [ep("gmv_2017", 5), ep("gmv_2017", 100, max_turns=30)]
+    rows = {r["arm"]: r for r in answerable(episodes, GOLD)}
+    assert rows["sql"]["correct"] == 0 and rows["sql (30 turns)"]["correct"] == 1
+    assert {r["arm"] for r in analyze(episodes, list(GOLD.values()))["misses"]} == {"sql", "sql (30 turns)"}
