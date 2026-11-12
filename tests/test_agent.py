@@ -111,6 +111,9 @@ def test_each_sql_arm_gets_only_its_own_context(raw_db):
     assert VALID_ORDER_RULE in prompts["sql+rule"] and "Metric glossary" not in prompts["sql+rule"]
     assert "Metric glossary" in prompts["sql+glossary"]
     assert prompts["sql+rule"].startswith(prompts["sql"])  # the rule is the only difference
+    assert "valid order is any order whose status is not `canceled` or `unavailable`" in agent.GLOSSARY.replace("*", "")
+    assert VALID_ORDER_RULE.endswith("A valid order is any order whose status is not `canceled` or `unavailable`.")
+    assert "placed" not in VALID_ORDER_RULE  # no exceptions: one convention only
 
 
 def test_unknown_arm_is_refused():

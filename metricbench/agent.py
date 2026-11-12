@@ -26,10 +26,13 @@ from .data import RAW_DB
 from .semantic import SemanticLayer
 
 ARMS = ("sql", "sql+rule", "sql+glossary", "semantic")
-# The one convention almost every question depends on, in the glossary's own words. The sql+rule arm gets this
-# and nothing else, to measure how much of the gap between sql and sql+glossary is this single sentence.
-VALID_ORDER_RULE = ("Company convention: a valid order is any order whose status is not `canceled` or `unavailable`. "
-                    "Unless the question asks about orders placed or canceled, count only valid orders.")
+# The one convention almost every question depends on. The second sentence is the glossary's; the first sums up
+# what the glossary says metric by metric. The sql+rule arm gets this and nothing else, to measure how much of
+# the gap between sql and sql+glossary is this single convention. It names no exception on purpose: the
+# glossary's two exceptions (orders placed and canceled orders count every status) are definitions of their
+# own, so a model may get those questions wrong here.
+VALID_ORDER_RULE = ("Company convention: metrics count only valid orders. "
+                    "A valid order is any order whose status is not `canceled` or `unavailable`.")
 GLOSSARY = (Path(__file__).with_name("glossary.md")).read_text(encoding="utf-8")
 MAX_ROWS = 50
 
