@@ -16,3 +16,10 @@ jobs:
       # Downloads Olist (checked by SHA-256), builds both databases and recomputes the expected answers.
       - run: metricbench build
       - run: pytest -q
+      # Which reading of the question explains each wrong answer in runs/. Calls no model.
+      - name: Causes of the wrong answers
+        run: metricbench causes --json benchmark/causes.json --summary "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: causes
+          path: benchmark/causes.json

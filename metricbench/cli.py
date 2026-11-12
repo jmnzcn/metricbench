@@ -6,6 +6,8 @@
       --base-url https://generativelanguage.googleapis.com/v1beta/openai/ --price 0.75,3.75
   metricbench report                                 results table from every file in runs/
   metricbench analyze                                a second look at the saved runs (calls no model)
+  metricbench causes                                 which reading of the question explains each wrong answer
+                                                     (needs `metricbench build`; calls no model)
   metricbench estimate --arm sql+rule --runs 3       what a run would cost, from the saved runs (calls no model)
 """
 
@@ -193,6 +195,21 @@ def cmd_analyze(args) -> None:
         Path(args.json).write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
 
 
+def cmd_causes(args) -> None:
+    from .causes import classify, markdown, text, variant_answers
+    from .data import RAW_DB
+    if not RAW_DB.exists():
+        raise SystemExit("the raw database is missing: run `metricbench build` first")
+    _, by_combo = variant_answers(RAW_DB)
+    result = classify(load_runs(), load_gold(), by_combo)
+    print(text(result))
+    if args.json:
+        Path(args.json).write_text(json.dumps(result, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    if args.summary:
+        with Path(args.summary).open("a", encoding="utf-8") as f:
+            f.write(markdown(result))
+
+
 # Which saved arm a planned arm should cost about the same as.
 COST_LIKE = {"sql+rule": "sql"}
 
@@ -283,6 +300,9 @@ def main() -> None:
     rep.add_argument("--site", help="write the results page data (every answer) to this file")
     an = sub.add_parser("analyze", help="a second look at the saved runs; calls no model")
     an.add_argument("--json", help="also write the analysis to this file")
+    ca = sub.add_parser("causes", help="which reading of the question explains each wrong answer; calls no model")
+    ca.add_argument("--json", help="also write every wrong answer's cause to this file")
+    ca.add_argument("--summary", help="append a Markdown summary to this file (the CI job summary)")
     est = sub.add_parser("estimate", help="what a run would cost, from the saved runs; calls no model")
     est.add_argument("--arm", choices=["sql", "sql+rule", "sql+glossary", "semantic"], required=True)
     est.add_argument("--models", help="comma-separated; default: every model with a saved run")
@@ -297,6 +317,8 @@ def main() -> None:
         cmd_run(args)
     elif args.cmd == "analyze":
         cmd_analyze(args)
+    elif args.cmd == "causes":
+        cmd_causes(args)
     elif args.cmd == "estimate":
         cmd_estimate(args)
     else:

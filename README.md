@@ -155,6 +155,7 @@ metricbench run --arm sql --backend openai --model gemini-3.8-flash \
   --base-url https://generativelanguage.googleapis.com/v1beta/openai/ --price 0.75,3.75
 metricbench report
 metricbench analyze      # answerable-only accuracy, intervals, how far the misses are; calls no model
+metricbench causes       # which reading of the question explains each wrong answer; calls no model
 ```
 
 The `openai` backend speaks the chat completions protocol, so it also works with OpenAI, Ollama and
@@ -211,6 +212,9 @@ the data can't answer and questions the semantic layer doesn't cover, to see how
 - Olist is a well-known public dataset. The models have very likely seen its schema and analyses of
   it, so raw SQL on a private warehouse could do worse than here.
 - The causes in the table of misses are inferred from the size of the error, not read from each query.
+  `metricbench causes` checks them: it recomputes every answer under each wrong reading (every order
+  status, `customer_id`, freight in GMV...) and matches the models' wrong answers against those. CI
+  runs it and keeps the result; its numbers are not in this README yet.
 
 ## Data
 
