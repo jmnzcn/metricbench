@@ -88,7 +88,7 @@ Of the 146 wrong raw-SQL answers from the four models:
 | Late meaning after the estimated timestamp, not on a later calendar day | 18 |
 | Every order status, and payments taken as revenue | 5 |
 | Freight added to the item price | 5 |
-| Other pairs of the readings above | 4 |
+| Other readings and pairs (freight, payments, the items–payments join) | 4 |
 | None of the readings tried | 5 |
 
 One sentence in the glossary ("a valid order is any order whose status is not canceled or
