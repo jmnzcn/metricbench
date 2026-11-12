@@ -167,8 +167,9 @@ above.
 Three experiments are set up in the code and have not been run. None of the numbers above come from
 them.
 
-- **A fourth arm, `sql+rule`**: raw SQL plus one sentence saying which orders count, and nothing else.
-  It measures how much of the gap between raw SQL and the glossary is that single convention.
+- **A fourth arm, `sql+rule`**: raw SQL plus the one convention about which orders count, and nothing
+  else. It measures how much of the gap between raw SQL and the glossary is that single convention.
+  It gives no exceptions, so the questions about orders placed and canceled orders may go wrong.
   `metricbench run --arm sql+rule --model claude-haiku-5-5`
 - **Repeated runs**, to replace the one-run caveat with a spread: `--run 2`, `--run 3`... Each is
   saved in its own file and `metricbench report` shows the lowest and highest run.
@@ -176,7 +177,8 @@ them.
   would get right: `--max-turns 30 --max-tool-calls 40`. It is reported as its own row.
 
 `metricbench estimate --arm sql+rule --runs 3` says what a run would cost before starting it, from
-what each model spent per question in the saved runs. One run of `sql+rule` on the four models comes
+what each model spent per question in the saved runs, and `--max-cost 2` stops a run once it has
+spent $2. One run of `sql+rule` on the four models comes
 to about $4.50, $3.00 of it Gemini.
 
 ## Related work

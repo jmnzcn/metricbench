@@ -18,6 +18,7 @@ from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from .analysis import DEFAULT_TURNS, arm_label
 from .data import ROOT
 
 RUNS = ROOT / "runs"
@@ -28,7 +29,7 @@ def load_gold() -> list[dict]:
     return json.loads(GOLD.read_text(encoding="utf-8"))
 
 
-DEFAULT_TURNS, DEFAULT_TOOL_CALLS = 14, 20
+DEFAULT_TOOL_CALLS = 20
 
 
 def run_file(model: str, arm: str, run: int = 1, max_turns: int = DEFAULT_TURNS) -> Path:
@@ -37,12 +38,6 @@ def run_file(model: str, arm: str, run: int = 1, max_turns: int = DEFAULT_TURNS)
     budget = f"__t{max_turns}" if max_turns != DEFAULT_TURNS else ""
     repeat = f"__r{run}" if run != 1 else ""
     return RUNS / f"{model}__{arm.replace('+', '-')}{budget}{repeat}.jsonl"
-
-
-def arm_label(ep: dict) -> str:
-    """The arm as reported: a run with a different turn budget is its own row."""
-    turns = ep.get("max_turns", DEFAULT_TURNS)
-    return ep["arm"] if turns == DEFAULT_TURNS else f"{ep['arm']} ({turns} turns)"
 
 
 class LockedSemantic:
@@ -84,20 +79,39 @@ def cmd_run(args) -> None:
     todo = [q for q in questions if q["id"] not in done]
     semantic = LockedSemantic() if args.arm == "semantic" else None
     lock = threading.Lock()
+    spent, skipped = [0.0], [0]
+    if args.max_cost is not None and not priced(backend):
+        raise SystemExit(f"--max-cost needs prices for {backend.model}: pass --price IN,OUT. Without them every "
+                         "question counts as $0 and the cap would never stop the run.")
     print(f"{backend.model} · {args.arm}: {len(todo)} questions ({len(done)} already in {out.name})")
 
     def one(q: dict) -> None:
+        with lock:
+            if args.max_cost is not None and spent[0] >= args.max_cost:
+                skipped[0] += 1
+                return
         ep = ask(q, args.arm, backend, budget, semantic=semantic).to_dict()
         ep["run"], ep["max_turns"], ep["max_tool_calls"] = args.run, budget.max_turns, budget.max_tool_calls
         ep["question"] = q["question"]  # the exact wording asked, so a later rewording can be detected
         ep["grade"] = grade(q, ep["answer"])
         with lock:
+            spent[0] += ep["cost_usd"]
             with out.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(ep, ensure_ascii=False, default=str) + "\n")
             print(f"  {q['id']:32s} {ep['grade']:10s} {ep['turns']:2d} turns  ${ep['cost_usd']:.4f}  {ep['stopped']}")
 
     with ThreadPoolExecutor(args.workers) as pool:
         list(pool.map(one, todo))
+    print(f"spent ${spent[0]:.4f} in this run")
+    if skipped[0]:
+        print(f"stopped at --max-cost ${args.max_cost:.2f}: {skipped[0]} questions not asked. "
+              "Run the same command again to continue from here.")
+
+
+def priced(backend) -> bool:
+    """Whether this backend can tell what a question cost."""
+    from .backends import PRICES
+    return backend.model in PRICES or any(getattr(backend, "price", (0.0, 0.0)))
 
 
 def load_runs() -> list[dict]:
@@ -262,6 +276,8 @@ def main() -> None:
     r.add_argument("--run", type=int, default=1, help="run number, to repeat a run: 2, 3... are saved apart")
     r.add_argument("--max-turns", type=int, default=DEFAULT_TURNS, help="turn budget per question")
     r.add_argument("--max-tool-calls", type=int, default=DEFAULT_TOOL_CALLS, help="tool call budget per question")
+    r.add_argument("--max-cost", type=float, help="stop asking new questions once this run has spent this many "
+                   "dollars; questions already in flight finish, so it can go over by a few questions")
     rep = sub.add_parser("report", help="results from runs/")
     rep.add_argument("--json", help="also write the results to this file")
     rep.add_argument("--site", help="write the results page data (every answer) to this file")
