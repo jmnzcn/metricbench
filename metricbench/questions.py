@@ -1,7 +1,7 @@
 """The questions, each with a reference answer computed from the raw tables.
 
 Every answerable question has two independent implementations: `ref`, SQL written by hand against the raw
-Olist tables, and `sem`, the same question asked to the semantic layer. tests/test_parity.py checks that both
+Olist tables, and `sem`, the same question asked to the semantic layer. tests/test_metricbench.py checks that both
 agree, so the expected answers do not depend on trusting either one.
 
 Kinds:

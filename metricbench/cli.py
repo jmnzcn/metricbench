@@ -5,6 +5,8 @@
   metricbench run --arm sql --backend openai --model gemini-3.8-flash \\
       --base-url https://generativelanguage.googleapis.com/v1beta/openai/ --price 0.75,3.75
   metricbench report                                 results table from every file in runs/
+  metricbench analyze                                a second look at the saved runs (calls no model)
+  metricbench estimate --arm sql+rule --runs 3       what a run would cost, from the saved runs (calls no model)
 """
 
 from __future__ import annotations
@@ -26,8 +28,21 @@ def load_gold() -> list[dict]:
     return json.loads(GOLD.read_text(encoding="utf-8"))
 
 
-def run_file(model: str, arm: str) -> Path:
-    return RUNS / f"{model}__{arm.replace('+', '-')}.jsonl"
+DEFAULT_TURNS, DEFAULT_TOOL_CALLS = 14, 20
+
+
+def run_file(model: str, arm: str, run: int = 1, max_turns: int = DEFAULT_TURNS) -> Path:
+    """runs/<model>__<arm>.jsonl for the first run with the default budget; later runs add __r2, __r3...
+    and a different turn budget adds __t<turns>, so no run overwrites or mixes with another."""
+    budget = f"__t{max_turns}" if max_turns != DEFAULT_TURNS else ""
+    repeat = f"__r{run}" if run != 1 else ""
+    return RUNS / f"{model}__{arm.replace('+', '-')}{budget}{repeat}.jsonl"
+
+
+def arm_label(ep: dict) -> str:
+    """The arm as reported: a run with a different turn budget is its own row."""
+    turns = ep.get("max_turns", DEFAULT_TURNS)
+    return ep["arm"] if turns == DEFAULT_TURNS else f"{ep['arm']} ({turns} turns)"
 
 
 class LockedSemantic:
@@ -49,7 +64,7 @@ class LockedSemantic:
 
 
 def cmd_run(args) -> None:
-    from .agent import ask
+    from .agent import Budget, ask
     from .backends import make
     from .score import grade
 
@@ -60,7 +75,8 @@ def cmd_run(args) -> None:
         questions = [q for q in questions if q["id"] in set(args.ids.split(","))]
     if args.limit:
         questions = questions[: args.limit]
-    out = run_file(backend.model, args.arm)
+    budget = Budget(max_turns=args.max_turns, max_tool_calls=args.max_tool_calls)
+    out = run_file(backend.model, args.arm, args.run, args.max_turns)
     out.parent.mkdir(exist_ok=True)
     done = set()
     if out.exists():
@@ -71,7 +87,8 @@ def cmd_run(args) -> None:
     print(f"{backend.model} · {args.arm}: {len(todo)} questions ({len(done)} already in {out.name})")
 
     def one(q: dict) -> None:
-        ep = ask(q, args.arm, backend, semantic=semantic).to_dict()
+        ep = ask(q, args.arm, backend, budget, semantic=semantic).to_dict()
+        ep["run"], ep["max_turns"], ep["max_tool_calls"] = args.run, budget.max_turns, budget.max_tool_calls
         ep["question"] = q["question"]  # the exact wording asked, so a later rewording can be detected
         ep["grade"] = grade(q, ep["answer"])
         with lock:
@@ -93,6 +110,7 @@ def load_runs() -> list[dict]:
                 ep = json.loads(line)
                 if ep["question_id"] in gold:
                     ep["grade"] = grade(gold[ep["question_id"]], ep["answer"])  # regrade with the current rules
+                    ep.setdefault("run", 1)
                     episodes.append(ep)
     return episodes
 
@@ -101,16 +119,21 @@ def summarize(episodes: list[dict]) -> list[dict]:
     gold = {q["id"]: q for q in load_gold()}
     groups: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for ep in episodes:
-        groups[(ep["model"], ep["arm"])].append(ep)
+        groups[(ep["model"], arm_label(ep))].append(ep)
     rows = []
     for (model, arm), eps in sorted(groups.items()):
+        per_run: dict[int, list[dict]] = defaultdict(list)
+        for e in eps:
+            per_run[e["run"]].append(e)
+        run_accuracy = [sum(e["grade"] == "correct" for e in r) / len(r) for _, r in sorted(per_run.items())]
         answerable = [e for e in eps if gold[e["question_id"]]["kind"] != "none"]
         in_layer = [e for e in answerable if gold[e["question_id"]]["in_semantic_layer"]]
         unanswerable = [e for e in eps if gold[e["question_id"]]["kind"] == "none"]
         g = Counter(e["grade"] for e in eps)
         rows.append({
-            "model": model, "arm": arm, "questions": len(eps),
-            "accuracy": g["correct"] / len(eps),
+            "model": model, "arm": arm, "questions": len(eps) // len(per_run),
+            "accuracy": g["correct"] / len(eps),  # over every run; equal to the run's own with a single run
+            "runs": len(per_run), "accuracy_min": min(run_accuracy), "accuracy_max": max(run_accuracy),
             "answerable_accuracy": sum(e["grade"] == "correct" for e in answerable) / max(len(answerable), 1),
             "in_layer_accuracy": sum(e["grade"] == "correct" for e in in_layer) / max(len(in_layer), 1),
             "refused_unanswerable": sum(e["grade"] == "correct" for e in unanswerable) / max(len(unanswerable), 1),
@@ -126,7 +149,7 @@ def by_tag(episodes: list[dict]) -> dict[str, dict[str, float]]:
     acc: dict[str, dict[str, list[bool]]] = defaultdict(lambda: defaultdict(list))
     for ep in episodes:
         for tag in gold[ep["question_id"]]["tags"]:
-            acc[tag][ep["arm"]].append(ep["grade"] == "correct")
+            acc[tag][arm_label(ep)].append(ep["grade"] == "correct")
     return {tag: {arm: sum(v) / len(v) for arm, v in arms.items()} for tag, arms in sorted(acc.items())}
 
 
@@ -135,8 +158,9 @@ def cmd_report(args) -> None:
     rows = summarize(episodes)
     print(f"{'model':22s} {'arm':13s} {'n':>3s} {'all':>6s} {'answ.':>6s} {'in SL':>6s} {'refuse':>6s} {'cost':>8s}")
     for r in rows:
+        spread = f"  {r['runs']} runs, {r['accuracy_min']:.1%} to {r['accuracy_max']:.1%}" if r["runs"] > 1 else ""
         print(f"{r['model']:22s} {r['arm']:13s} {r['questions']:3d} {r['accuracy']:6.1%} {r['answerable_accuracy']:6.1%} "
-              f"{r['in_layer_accuracy']:6.1%} {r['refused_unanswerable']:6.1%} ${r['cost_usd']:7.3f}")
+              f"{r['in_layer_accuracy']:6.1%} {r['refused_unanswerable']:6.1%} ${r['cost_usd']:7.3f}{spread}")
     print("\naccuracy by trap and arm (all models)")
     for tag, arms in by_tag(episodes).items():
         print(f"  {tag:18s} " + "  ".join(f"{a}={v:5.1%}" for a, v in sorted(arms.items())))
@@ -145,6 +169,49 @@ def cmd_report(args) -> None:
                                    encoding="utf-8")
     if args.site:
         Path(args.site).write_text(json.dumps(site_data(episodes, rows), ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def cmd_analyze(args) -> None:
+    from .analysis import analyze, text
+    result = analyze(load_runs(), load_gold())
+    print(text(result))
+    if args.json:
+        Path(args.json).write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
+
+
+# Which saved arm a planned arm should cost about the same as.
+COST_LIKE = {"sql+rule": "sql"}
+
+
+def estimate(episodes: list[dict], arm: str, models: list[str] | None, runs: int, questions: int) -> list[dict]:
+    """Expected cost of `runs` runs of `arm`, from what the same model spent per question on that arm (or on
+    the nearest one) in the saved runs. A larger turn budget costs more than this says."""
+    spent: dict[tuple[str, str], list[float]] = defaultdict(list)
+    for ep in episodes:
+        if ep.get("max_turns", DEFAULT_TURNS) == DEFAULT_TURNS:
+            spent[(ep["model"], ep["arm"])].append(ep["cost_usd"])
+    known = sorted({m for m, _ in spent})
+    rows = []
+    for model in models or known:
+        basis = arm if (model, arm) in spent else COST_LIKE.get(arm, arm)
+        costs = spent.get((model, basis))
+        per_question = sum(costs) / len(costs) if costs else None
+        rows.append({"model": model, "arm": arm, "basis": basis if costs else None, "per_question": per_question,
+                     "total": per_question * questions * runs if costs else None})
+    return rows
+
+
+def cmd_estimate(args) -> None:
+    questions = len(load_gold())
+    rows = estimate(load_runs(), args.arm, args.models.split(",") if args.models else None, args.runs, questions)
+    print(f"{args.runs} run(s) of {args.arm}, {questions} questions each. Estimate only: nothing is sent to a model.")
+    for r in rows:
+        if r["total"] is None:
+            print(f"  {r['model']:22s} no saved run to estimate from")
+        else:
+            print(f"  {r['model']:22s} ${r['total']:7.2f}  (${r['per_question']:.4f} per question, as in its {r['basis']} run)")
+    known = [r["total"] for r in rows if r["total"] is not None]
+    print(f"  {'total':22s} ${sum(known):7.2f}")
 
 
 def _got(answer: dict | None) -> object:
@@ -162,7 +229,9 @@ def site_data(episodes: list[dict], rows: list[dict]) -> dict:
     gold = load_gold()
     answers: dict[str, dict[str, dict]] = defaultdict(dict)
     for ep in episodes:
-        answers[ep["question_id"]][f"{ep['model']}|{ep['arm']}"] = {
+        if ep["run"] != 1:
+            continue  # the page shows one answer per model and arm: the first run's
+        answers[ep["question_id"]][f"{ep['model']}|{arm_label(ep)}"] = {
             "grade": ep["grade"], "got": _got(ep["answer"]),
             "why": (ep["answer"] or {}).get("explanation", "")[:600] or ep["stopped"],
             "sql": [c["args"].get("query") or c["args"] for c in ep["calls"]
@@ -181,7 +250,7 @@ def main() -> None:
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("build", help="download Olist, build the databases and the expected answers")
     r = sub.add_parser("run", help="ask an agent every question")
-    r.add_argument("--arm", choices=["sql", "sql+glossary", "semantic"], required=True)
+    r.add_argument("--arm", choices=["sql", "sql+rule", "sql+glossary", "semantic"], required=True)
     r.add_argument("--backend", default="claude")
     r.add_argument("--model")
     r.add_argument("--base-url")
@@ -190,9 +259,18 @@ def main() -> None:
     r.add_argument("--ids", help="comma-separated question ids")
     r.add_argument("--limit", type=int)
     r.add_argument("--workers", type=int, default=4)
+    r.add_argument("--run", type=int, default=1, help="run number, to repeat a run: 2, 3... are saved apart")
+    r.add_argument("--max-turns", type=int, default=DEFAULT_TURNS, help="turn budget per question")
+    r.add_argument("--max-tool-calls", type=int, default=DEFAULT_TOOL_CALLS, help="tool call budget per question")
     rep = sub.add_parser("report", help="results from runs/")
     rep.add_argument("--json", help="also write the results to this file")
     rep.add_argument("--site", help="write the results page data (every answer) to this file")
+    an = sub.add_parser("analyze", help="a second look at the saved runs; calls no model")
+    an.add_argument("--json", help="also write the analysis to this file")
+    est = sub.add_parser("estimate", help="what a run would cost, from the saved runs; calls no model")
+    est.add_argument("--arm", choices=["sql", "sql+rule", "sql+glossary", "semantic"], required=True)
+    est.add_argument("--models", help="comma-separated; default: every model with a saved run")
+    est.add_argument("--runs", type=int, default=1)
     args = p.parse_args()
     if args.cmd == "build":
         from .data import main as build
@@ -201,6 +279,10 @@ def main() -> None:
         write()
     elif args.cmd == "run":
         cmd_run(args)
+    elif args.cmd == "analyze":
+        cmd_analyze(args)
+    elif args.cmd == "estimate":
+        cmd_estimate(args)
     else:
         cmd_report(args)
 

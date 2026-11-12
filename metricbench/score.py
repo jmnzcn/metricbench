@@ -50,7 +50,7 @@ def quarter(label: Any) -> str:
     return key(label)
 
 
-def same_number(got: Any, expected: float, percent: bool = False) -> bool:
+def same_number(got: Any, expected: float, percent: bool = False, rel_tol: float = REL_TOL) -> bool:
     if got is None or isinstance(got, bool):
         return False
     try:
@@ -58,12 +58,14 @@ def same_number(got: Any, expected: float, percent: bool = False) -> bool:
     except (TypeError, ValueError):
         return False
     candidates = [got, got / 100] if percent else [got]
-    return any(math.isclose(c, expected, rel_tol=REL_TOL, abs_tol=1e-9) for c in candidates)
+    return any(math.isclose(c, expected, rel_tol=rel_tol, abs_tol=1e-9) for c in candidates)
 
 
-def grade(question: dict, answer: dict | None) -> str:
+def grade(question: dict, answer: dict | None, rel_tol: float = REL_TOL) -> str:
     """correct, wrong, abstained (said it cannot answer an answerable question),
-    invented (answered an unanswerable one) or no_answer."""
+    invented (answered an unanswerable one) or no_answer.
+
+    `rel_tol` is only changed by the analysis, to show how much the score depends on the tolerance."""
     if answer is None:
         return "no_answer"
     kind, expected, percent = question["kind"], question["answer"], question.get("percent", False)
@@ -76,7 +78,7 @@ def grade(question: dict, answer: dict | None) -> str:
         number = answer.get("number")
         if number is None and len(answer.get("table") or []) == 1:
             number = answer["table"][0]["value"]
-        return "correct" if same_number(number, expected, percent) else "wrong"
+        return "correct" if same_number(number, expected, percent, rel_tol) else "wrong"
     label = quarter if question.get("key") == "quarter" else key
     rows = [(label(r.get("label")), r.get("value")) for r in answer.get("table") or []]
     want = [(label(k), v) for k, v in expected]
@@ -86,5 +88,5 @@ def grade(question: dict, answer: dict | None) -> str:
         return "wrong"
     if not question.get("ordered"):
         rows, want = sorted(rows, key=lambda r: r[0]), sorted(want, key=lambda r: r[0])
-    ok = all(a[0] == b[0] and same_number(a[1], b[1], percent) for a, b in zip(rows, want))
+    ok = all(a[0] == b[0] and same_number(a[1], b[1], percent, rel_tol) for a, b in zip(rows, want))
     return "correct" if ok else "wrong"
