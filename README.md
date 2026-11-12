@@ -78,6 +78,11 @@ Each of those is a defensible choice. None is the company's metric, and nothing 
 which one it is. So "34% right" does not mean the model fails at SQL two times out of three. It means
 that two times out of three its reading of the question was not mine.
 
+Often the model had the company's number in front of it. In 33 of the 125 wrong raw-SQL numbers, its
+own explanation also gives the expected answer as the alternative ("excluding canceled/unavailable
+orders gives R$993,592.98"): 14 of Opus's 36, 11 of Sonnet's 37, 5 of Haiku's 35 and 3 of Gemini's 17.
+It computed both and had no way to know which one to report.
+
 **Three out of four misses are one convention.** `metricbench causes` recomputes every answer under
 14 wrong readings of the question (and their pairs) and checks which one each wrong answer matches.
 Of the 146 wrong raw-SQL answers from the four models:
@@ -225,7 +230,14 @@ the data can't answer and questions the semantic layer doesn't cover, to see how
   it, so raw SQL on a private warehouse could do worse than here.
 - A cause is assigned when a wrong answer equals, within 0.1%, the answer under one of the readings
   `metricbench causes` tries. It is a match on the number, not a reading of the model's SQL, and 5 of
-  the 146 raw-SQL misses match nothing. CI runs it on every push and keeps the full list as an artifact.
+  the 146 raw-SQL misses match nothing. I chose the readings after seeing the misses. As a check, I
+  read the SQL and the explanation of 21 of the 146 (14 picked at random, 7 where the SQL mentions a
+  status filter although the cause says every status was counted): none contradicted its cause. In
+  those 7 the model computed the number both ways in one query and reported the unfiltered one.
+  CI runs `causes` on every push and keeps the full list as an artifact.
+- The benchmark is less varied than its 78 questions suggest. Three out of four raw-SQL misses are
+  one convention, so the raw SQL score is mostly a measure of that convention. Questions that don't
+  depend on which orders count (delivery times, review scores, product weight) are a small part of it.
 
 ## Data
 

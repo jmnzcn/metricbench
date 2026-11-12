@@ -166,7 +166,9 @@
    "1% to 5%": 0,
    "over 5%": 0,
    "wrong table": 1,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
   },
   {
    "model": "claude-haiku-5-5",
@@ -176,7 +178,9 @@
    "1% to 5%": 12,
    "over 5%": 12,
    "wrong table": 6,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 35,
+   "offers_expected": 5
   },
   {
    "model": "claude-haiku-5-5",
@@ -186,7 +190,9 @@
    "1% to 5%": 3,
    "over 5%": 0,
    "wrong table": 0,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 3,
+   "offers_expected": 2
   },
   {
    "model": "claude-opus-5-5",
@@ -196,7 +202,9 @@
    "1% to 5%": 0,
    "over 5%": 0,
    "wrong table": 0,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
   },
   {
    "model": "claude-opus-5-5",
@@ -206,7 +214,9 @@
    "1% to 5%": 11,
    "over 5%": 10,
    "wrong table": 9,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 36,
+   "offers_expected": 14
   },
   {
    "model": "claude-opus-5-5",
@@ -216,7 +226,9 @@
    "1% to 5%": 0,
    "over 5%": 0,
    "wrong table": 0,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
   },
   {
    "model": "claude-sonnet-5-5",
@@ -226,7 +238,9 @@
    "1% to 5%": 0,
    "over 5%": 0,
    "wrong table": 0,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
   },
   {
    "model": "claude-sonnet-5-5",
@@ -236,7 +250,9 @@
    "1% to 5%": 10,
    "over 5%": 11,
    "wrong table": 4,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 37,
+   "offers_expected": 11
   },
   {
    "model": "claude-sonnet-5-5",
@@ -246,7 +262,9 @@
    "1% to 5%": 1,
    "over 5%": 0,
    "wrong table": 0,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 2,
+   "offers_expected": 2
   },
   {
    "model": "gemini-3.8-flash",
@@ -256,7 +274,9 @@
    "1% to 5%": 0,
    "over 5%": 0,
    "wrong table": 0,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
   },
   {
    "model": "gemini-3.8-flash",
@@ -266,7 +286,9 @@
    "1% to 5%": 9,
    "over 5%": 0,
    "wrong table": 2,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 17,
+   "offers_expected": 3
   },
   {
    "model": "gemini-3.8-flash",
@@ -276,7 +298,9 @@
    "1% to 5%": 0,
    "over 5%": 0,
    "wrong table": 0,
-   "no number": 0
+   "no number": 0,
+   "wrong_numbers": 0,
+   "offers_expected": 0
   }
  ],
  "tolerance": [

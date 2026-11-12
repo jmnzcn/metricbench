@@ -7,6 +7,7 @@ from metricbench.analysis import (
     band,
     family,
     misses,
+    offers_expected,
     relative_error,
     tolerance,
 )
@@ -60,6 +61,20 @@ def test_misses_counts_only_wrong_answers():
     episodes = [ep("gmv_2017", 100.6), ep("gmv_2018", 117), ep("aov_2018", 100), ep("gmv_SP_2018", answer_type=None)]
     (row,) = misses(episodes, GOLD)
     assert (row["wrong"], row["within 1%"], row["over 5%"]) == (2, 1, 1)
+
+
+def test_an_explanation_that_also_gives_the_expected_number_is_noticed():
+    def said(text):
+        return {"answer_type": "number", "number": 1.0, "explanation": text}
+
+    gmv = q("gmv", 993592.98)
+    assert offers_expected(gmv, said("All statuses: R$996,647.75. Excluding canceled orders gives R$993,592.98."))
+    assert not offers_expected(gmv, said("Sum of price for April 2018, all order statuses: R$996,647.75."))
+    rate = q("late", 0.0773, percent=True)
+    assert offers_expected(rate, said("9.37% by timestamp; by calendar day it is 7.73%."))
+    assert not offers_expected(rate, said("9.37% of delivered orders arrived late."))
+    assert not offers_expected(q("t", [["SP", 1]], "table"), said("1"))
+    assert not offers_expected(gmv, None)
 
 
 def test_tolerance_changes_what_counts_as_right():

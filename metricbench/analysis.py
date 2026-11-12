@@ -72,6 +72,26 @@ def band(question: dict, answer: dict | None) -> str:
     return "within 1%" if err <= 0.01 else "1% to 5%" if err <= 0.05 else "over 5%"
 
 
+_NUMBER = re.compile(r"\d[\d,]*\.?\d*")
+
+
+def offers_expected(question: dict, answer: dict | None) -> bool:
+    """Whether a wrong number's explanation also states the expected one (as "excluding canceled orders
+    gives ..."). A match on the number within the scoring tolerance, so it can miss a rounded figure."""
+    if question["kind"] != "number" or not answer:
+        return False
+    expected = float(question["answer"])
+    targets = [expected, expected * 100] if question.get("percent") else [expected]
+    for found in _NUMBER.findall(answer.get("explanation") or ""):
+        try:
+            value = float(found.replace(",", "").rstrip("."))
+        except ValueError:
+            continue
+        if any(abs(value - t) <= 0.001 * abs(t) for t in targets if t):
+            return True
+    return False
+
+
 def interval(right_by_family: dict[str, list[bool]], seed: int = 0) -> tuple[float, float]:
     """95% percentile interval for accuracy, resampling question families with replacement."""
     families = sorted(right_by_family)
@@ -117,7 +137,9 @@ def misses(episodes: Iterable[dict], gold: dict[str, dict]) -> list[dict]:
     for (model, arm), eps in _groups(episodes, gold).items():
         wrong = [e for e in eps if grade(gold[e["question_id"]], e["answer"]) == "wrong"]
         counts = Counter(band(gold[e["question_id"]], e["answer"]) for e in wrong)
-        rows.append({"model": model, "arm": arm, "wrong": len(wrong), **{b: counts[b] for b in BANDS}})
+        rows.append({"model": model, "arm": arm, "wrong": len(wrong), **{b: counts[b] for b in BANDS},
+                     "wrong_numbers": sum(gold[e["question_id"]]["kind"] == "number" for e in wrong),
+                     "offers_expected": sum(offers_expected(gold[e["question_id"]], e["answer"]) for e in wrong)})
     return rows
 
 
@@ -171,9 +193,11 @@ def text(result: dict[str, Any]) -> str:
                    f"{_pct(r['low']) + ' – ' + _pct(r['high']):>15s} {r['no_answer']:10d} "
                    f"{_pct(r['accuracy_when_answered']):>14s}")
     out += ["", "Wrong answers, by distance from the expected number",
-            f"{'model':20s} {'arm':13s} {'wrong':>6s} " + " ".join(f"{b:>12s}" for b in BANDS)]
+            f"{'model':20s} {'arm':13s} {'wrong':>6s} " + " ".join(f"{b:>12s}" for b in BANDS)
+            + "  explanation also gives the expected number"]
     for r in result["misses"]:
-        out.append(f"{r['model']:20s} {r['arm']:13s} {r['wrong']:6d} " + " ".join(f"{r[b]:12d}" for b in BANDS))
+        out.append(f"{r['model']:20s} {r['arm']:13s} {r['wrong']:6d} " + " ".join(f"{r[b]:12d}" for b in BANDS)
+                   + f"  {r['offers_expected']} of {r['wrong_numbers']} wrong numbers")
     out += ["", "Accuracy by tolerance (all models, answerable questions)"]
     for r in result["tolerance"]:
         out.append(f"  {r['arm']:13s} " + "  ".join(f"{float(t):.1%}: {_pct(r[f'{t:g}'])}" for t in TOLERANCES))
