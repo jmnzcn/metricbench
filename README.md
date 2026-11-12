@@ -236,8 +236,9 @@ the data can't answer and questions the semantic layer doesn't cover, to see how
   those 7 the model computed the number both ways in one query and reported the unfiltered one.
   CI runs `causes` on every push and keeps the full list as an artifact.
 - The benchmark is less varied than its 78 questions suggest. Three out of four raw-SQL misses are
-  one convention, so the raw SQL score is mostly a measure of that convention. Questions that don't
-  depend on which orders count (delivery times, review scores, product weight) are a small part of it.
+  one convention, so the raw SQL score is mostly a measure of that convention. Only 20 of the 68
+  answerable questions don't depend on which orders count (orders placed, cancellations, delivery
+  times, review scores, product weight).
 
 ## Data
 
