@@ -79,8 +79,7 @@
     The other 10 can't be answered, and every model said so in every arm. A number counts as right within 0.1%.
     Gemini ran out of its 14 turns on 41 raw SQL questions and on 6 with the glossary; those count as not right.</p>
   <div class="table-wrap"><table id="board">
-    <thead><tr><th>Model</th><th>Raw SQL</th><th>SQL + glossary</th><th>Semantic layer</th>
-      <th>Semantic, covered questions</th><th>Cost / question (SQL · glossary · semantic)</th></tr></thead>
+    <thead><tr></tr></thead>
     <tbody></tbody>
   </table></div>
 
@@ -103,7 +102,7 @@
   <p class="muted">All four models together, all 78 questions. A question can have several traps, and a low number
     here does not mean the models fell into that trap: most questions with any tag also depend on which orders count.</p>
   <div class="table-wrap"><table id="traps">
-    <thead><tr><th>Trap</th><th>Questions</th><th>Raw SQL</th><th>SQL + glossary</th><th>Semantic layer</th></tr></thead>
+    <thead><tr></tr></thead>
     <tbody></tbody>
   </table></div>
 
@@ -116,7 +115,7 @@
   </div>
   <div class="filters" id="filters"></div>
   <div class="table-wrap"><table id="questions">
-    <thead><tr><th>Question</th><th>Raw SQL</th><th>SQL + glossary</th><th>Semantic layer</th></tr></thead>
+    <thead><tr></tr></thead>
     <tbody></tbody>
   </table></div>
   <div id="detail"></div>
@@ -128,7 +127,10 @@
 <script>
 const MODELS = [["claude-haiku-5-5", "Claude Haiku 5.5"], ["claude-sonnet-5-5", "Claude Sonnet 5.5"],
                 ["claude-opus-5-5", "Claude Opus 5.5"], ["gemini-3.8-flash", "Gemini 3.8 Flash"]];
-const ARMS = [["sql", "Raw SQL"], ["sql+glossary", "SQL + glossary"], ["semantic", "Semantic layer"]];
+// Every arm the page knows, in reading order. Only the ones with a run in results.json are shown.
+const ALL_ARMS = [["sql", "Raw SQL"], ["sql+rule", "SQL + one rule"], ["sql+glossary", "SQL + glossary"],
+                  ["semantic", "Semantic layer"]];
+let ARMS = ALL_ARMS;
 const GRADE = {correct: "right", wrong: "wrong", abstained: "said it can't answer", no_answer: "no answer",
                invented: "invented an answer"};
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
@@ -140,26 +142,35 @@ const show = v => v === null || v === undefined ? "–" : Array.isArray(v)
 
 fetch("results.json").then(r => r.json()).then(data => {
   const row = (m, a) => data.summary.find(r => r.model === m && r.arm === a);
-  const range = a => {
-    const v = MODELS.map(([m]) => row(m, a)).filter(Boolean);
-    return [Math.min(...v.map(r => r.in_layer_accuracy)), Math.max(...v.map(r => r.in_layer_accuracy))];
-  };
+  ARMS = ALL_ARMS.filter(([a]) => data.summary.some(r => r.arm === a));
+  const heads = ARMS.map(([, label]) => `<th>${label}</th>`).join("");
+  const short = {"sql": "SQL", "sql+rule": "rule", "sql+glossary": "glossary", "semantic": "semantic"};
+  document.querySelector("#board thead tr").innerHTML = `<th>Model</th>${heads}
+    <th>Semantic, covered questions</th><th>Cost / question (${ARMS.map(([a]) => short[a]).join(" · ")})</th>`;
+  document.querySelector("#traps thead tr").innerHTML = `<th>Trap</th><th>Questions</th>${heads}`;
+  document.querySelector("#questions thead tr").innerHTML = `<th>Question</th>${heads}`;
+
+  const NUMBER = ["no", "one", "two", "three", "four"];
   document.getElementById("cards").innerHTML = ARMS.map(([a, label]) => {
-    const [lo, hi] = range(a);
-    return `<div class="card"><div class="label">${label}</div><div class="big">${(100 * lo).toFixed(0)}–${(100 * hi).toFixed(0)}%</div>
-      <div class="label">right on the 64 covered questions, across the four models</div></div>`;
+    const v = MODELS.map(([m]) => row(m, a)).filter(Boolean).map(r => r.in_layer_accuracy);
+    const lo = (100 * Math.min(...v)).toFixed(0), hi = (100 * Math.max(...v)).toFixed(0);
+    const who = v.length === 1 ? "one model" : `the ${NUMBER[v.length] ?? v.length} models${v.length < MODELS.length ? " that ran it" : ""}`;
+    return `<div class="card"><div class="label">${label}</div><div class="big">${lo === hi ? lo : `${lo}–${hi}`}%</div>
+      <div class="label">right on the 64 covered questions, across ${who}</div></div>`;
   }).join("");
 
+  // A model that has not run an arm gets a dash, not a zero.
   document.querySelector("#board tbody").innerHTML = MODELS.map(([m, name]) => {
     const r = ARMS.map(([a]) => row(m, a));
-    const cost = r.map(x => `$${(x.cost_usd / x.questions).toFixed(4)}`).join(" · ");
-    return `<tr><td>${name}</td>${r.map(x => `<td>${barCell(x.answerable_accuracy)}</td>`).join("")}
-      <td>${barCell(r[2].in_layer_accuracy)}</td><td>${cost}</td></tr>`;
+    const cost = r.map(x => x ? `$${(x.cost_usd / x.questions).toFixed(4)}` : "–").join(" · ");
+    const semantic = row(m, "semantic");
+    return `<tr><td>${name}</td>${r.map(x => `<td>${x ? barCell(x.answerable_accuracy) : "–"}</td>`).join("")}
+      <td>${semantic ? barCell(semantic.in_layer_accuracy) : "–"}</td><td>${cost}</td></tr>`;
   }).join("");
 
   const count = tag => data.questions.filter(q => q.tags.includes(tag)).length;
   document.querySelector("#traps tbody").innerHTML = Object.entries(data.by_tag).map(([tag, arms]) =>
-    `<tr><td>${esc(tag)}</td><td>${count(tag)}</td>${ARMS.map(([a]) => `<td>${barCell(arms[a] ?? 0)}</td>`).join("")}</tr>`
+    `<tr><td>${esc(tag)}</td><td>${count(tag)}</td>${ARMS.map(([a]) => `<td>${a in arms ? barCell(arms[a]) : "–"}</td>`).join("")}</tr>`
   ).join("");
 
   const tags = ["all", ...Object.keys(data.by_tag)];
@@ -178,8 +189,9 @@ fetch("results.json").then(r => r.json()).then(data => {
     document.querySelector("#questions tbody").innerHTML = qs.map(q => `<tr class="q${q.id === selected ? " selected" : ""}" data-id="${q.id}">
       <td>${esc(q.question)}<br><span class="tag">${q.tags.map(esc).join(" · ")}${q.in_semantic_layer || q.kind === "none" ? "" : " · not in the semantic layer"}</span></td>
       ${ARMS.map(([a]) => `<td>${MODELS.map(([m, name]) => {
-        const g = (q.results[`${m}|${a}`] || {}).grade || "no_answer";
-        return `<i class="dot ${g}" title="${esc(name)}: ${GRADE[g]}"></i>`;
+        const r = q.results[`${m}|${a}`];
+        if (!r) return row(m, a) ? `<i class="dot no_answer" title="${esc(name)}: ${GRADE.no_answer}"></i>` : "";
+        return `<i class="dot ${r.grade}" title="${esc(name)}: ${GRADE[r.grade]}"></i>`;
       }).join("")}</td>`).join("")}</tr>`).join("");
   }
   render();
